@@ -37,9 +37,9 @@ namespace Market
             shop.price[2] = 20;
             shop.wallet = 0;
 
-            bool w = true;
+            bool option = true;
 
-            while (w)
+            while (option)
             {
                 Console.WriteLine("Я дома. На счету " + shop.wallet + "$");
 
@@ -57,7 +57,7 @@ namespace Market
                         shop = Store(shop);
                         break;
                     case "выйти":
-                        w = false;
+                        option = false;
                         break;
                     default:
                         Console.WriteLine("ОШИБКА. Проверьте правельность набора");
