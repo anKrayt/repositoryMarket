@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -45,46 +46,48 @@ namespace Market
                 Console.WriteLine("идти на работу или в магазин?");
                 Console.WriteLine("Выйти из игры?Для выхода введите (выйти)");
                 Console.WriteLine("Для сохранения игры введите (сохранить)");
-                string q = Console.ReadLine();
+                string answer = Console.ReadLine();
 
-                if (q == "на работу")
+                switch (answer)
                 {
-                    shop.wallet = Job(shop.wallet);
-                }
-                else if (q == "в магазин")
-                {
-                    shop = Store(shop);
-                }
-                else if (q == "выйти")
-                {
-                    w = false;
+                    case "работа":
+                        shop.wallet = Job(shop.wallet);
+                        break;
+                    case "магазин":
+                        shop = Store(shop);
+                        break;
+                    case "выйти":
+                        w = false;
+                        break;
+                    default:
+                        Console.WriteLine("ОШИБКА. Проверьте правельность набора");
+                        break;
                 }
             }
         }
 
         static int Job(int wallet)
         {
-            string q;
+            
             Console.WriteLine("Начать работу?");
-            bool p = true;
-            while (p)
+            bool option = true;
+            while (option)
             {
-                q = Console.ReadLine();
-                if (q == "да")
+                string answer = Console.ReadLine();
+                switch (answer)
                 {
-                    wallet += 100;
-                    Console.WriteLine("получено 100 $. на счету " + wallet + " $. Продолжить работу?");
-                }
-                else if (q == "нет")
-                {
-                    p = false;
-                }
-                else
-                {
-                    wallet -= 1000;
-                    Console.WriteLine("Вам засунули лопату в жопу и заставили закопать 1000 $. НА ВАШЕМ СЧЕТУ " + wallet +
-                                      " $. Вытащить лопату из задницы и продолжить работу?");
-
+                    case "да":
+                        wallet += 100;
+                        Console.WriteLine("получено 100 $. на счету " + wallet + " $. Продолжить работу?");
+                        break;
+                    case "нет":
+                        option = false;
+                        break;
+                    default:
+                        wallet -= 100;
+                        Console.WriteLine("Вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ " + wallet +
+                                          " $. Вытащить лопату из задницы и продолжить работу?");
+                        break;
                 }
             }
             return wallet;
@@ -92,11 +95,10 @@ namespace Market
 
         static ShopKucha Store(ShopKucha shop)
         {
-            string q;
-            bool c = true;
-            while (c)
+            string answer;
+            bool option = true;
+            while (option)
             {
-
                 Console.WriteLine("Вы в магазине. Для выхода введите (домой)");
                 Console.WriteLine("На данный момент в магазине есть:");
                 for (int i = 0; i < shop.price.Length; i++)
@@ -104,23 +106,22 @@ namespace Market
                     Console.WriteLine(shop.product[i] + "-" + shop.price[i]);
                 }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
-                q = Console.ReadLine();
-                if (q == "да")
+                answer = Console.ReadLine();
+                switch (answer)
                 {
-                    shop.product = addProduct(shop.product);
-                    shop.price = addPrice(shop.price);
-                }
-                else if (q == "нет")
-                {
-                    shop.wallet = buy(shop);
-                }
-                else if (q == "домой")
-                {
-                    c = false;
-                }
-                else
-                {
-                    Console.WriteLine("ОШИБКА. Введите (да) или (нет). Для выхода из магазина введите (домой)");
+                    case "да":
+                        shop.product = addProduct(shop.product);
+                        shop.price = addPrice(shop.price);
+                        break;
+                    case "нет":
+                        shop.wallet = buy(shop);
+                        break;
+                    case "домой":
+                        option = false;
+                        break;
+                    default:
+                        Console.WriteLine("ОШИБКА. Введите (да) или (нет). Для выхода из магазина введите (домой)");
+                        break;
                 }
             }
             return shop;
@@ -153,12 +154,15 @@ namespace Market
             while (!result)
             {
                 result = int.TryParse(Console.ReadLine(), out priceNext[priceNext.Length - 1]);
-                if (!result)
+                switch (result)
                 {
-                    Console.WriteLine("Попробуйте использовать целые числа");
+                    case false:
+                        Console.WriteLine("Попробуйте использовать целые числа");
+                        break;
                 }
-                else if (priceNext[priceNext.Length - 1] < 0)
+                if (priceNext[priceNext.Length - 1] < 0)
                 {
+                    result = false;
                     Console.WriteLine("Использование отрецательных чисел запрещено");
                 }
             }
@@ -168,23 +172,25 @@ namespace Market
 
         static int buy(ShopKucha shop)
         {
-            string q;
-            bool u = true;
-            while (u)
+            string option;
+            bool result = true;
+            while (result)
             {
                 Console.WriteLine("Что вы хотите купить?");
-                q = Console.ReadLine();
+                option = Console.ReadLine();
                 for (int i = 0; i < shop.product.Length; i++)
                 {
-                    if (q == shop.product[i])
+                    if (option == shop.product[i])
                     {
                         shop.wallet -= shop.price[i];
                         Console.WriteLine("Вы купили " + shop.product[i] + " остаток на счету " + shop.wallet + "");
                     }
                 }
-                if (q == "ничего")
+                switch (option)
                 {
-                    u = false;
+                    case "ничего":
+                        result = false;
+                        break;
                 }
             }
             return shop.wallet;
