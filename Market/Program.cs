@@ -45,11 +45,31 @@ namespace Market
             while (option)
             {
                 pictureHouse.meHouse(args);
-                Console.WriteLine("              Я дома. На счету " + shop.wallet + "$");
+                Console.Write("              Я дома. На счету " );
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("{0} $", shop.wallet);
+                Console.ResetColor();
 
-                Console.WriteLine("идти на работу или в магазин?");
-                Console.WriteLine("Выйти из игры?Для выхода введите (выйти)");
-                Console.WriteLine("Для сохранения игры введите (сохранить)");
+                Console.Write("Идти ");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("работа");
+                Console.ResetColor();
+                Console.Write("ть или в ");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+                Console.Write("магазин");
+                Console.ResetColor();
+                Console.WriteLine("?");
+
+                Console.Write("Выйти из игры?Для выхода введите (");
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.Write("выйти");
+                Console.ResetColor();
+                Console.WriteLine(")");
+                Console.Write("Для сохранения игры введите (");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("сохранить");
+                Console.ResetColor();
+                Console.WriteLine(")");
                 string answer = Console.ReadLine();
                 
                 Console.Clear();
@@ -88,7 +108,11 @@ namespace Market
                 {
                     case "да":
                         wallet += 100;
-                        Console.WriteLine("получено 100 $. на счету " + wallet + " $. Продолжить работу?");
+                        Console.Write("Получено 100 $. на счету ");
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("{0} $", wallet);
+                        Console.ResetColor();
+                        Console.WriteLine(". Продолжыть работу?");
                         break;
                     case "нет":
                         option = false;
@@ -111,11 +135,22 @@ namespace Market
             while (option)
             {
                 pictureMarket.meMarcet(args);
-                Console.WriteLine("              Вы в магазине. Для выхода введите (домой)");
+                Console.Write("              Вы в магазине. Для выхода введите (");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("домой");
+                Console.ResetColor();
+                Console.WriteLine(")");
+
                 Console.WriteLine("На данный момент в магазине есть:");
                 for (int i = 0; i < shop.price.Length; i++)
                 {
-                    Console.WriteLine(shop.product[i] + "-" + shop.price[i]);
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(shop.product[i]);
+                    Console.ResetColor();
+                    Console.Write("-");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(shop.price[i]);
+                    Console.ResetColor();
                 }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
                 answer = Console.ReadLine();
@@ -193,7 +228,11 @@ namespace Market
             bool result = true;
             while (result)
             {
-                Console.WriteLine("Что вы хотите купить?");
+                Console.Write("Что вы хотите купить? для выхода из торговой зоны введите (");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("ничего");
+                Console.ResetColor();
+                Console.WriteLine(")");
                 option = Console.ReadLine();
                 for (int i = 0; i < shop.product.Length; i++)
                 {
