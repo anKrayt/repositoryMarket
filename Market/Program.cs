@@ -1,15 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Market
 {
-    class Program
+    public class Program
     {
-        struct ShopKucha
+        public struct ShopKucha
         {
             public string[] product;
             public int[] price;
@@ -41,34 +44,41 @@ namespace Market
 
             while (option)
             {
-                Console.WriteLine("Я дома. На счету " + shop.wallet + "$");
+                pictureHouse.meHouse(args);
+                Console.WriteLine("              Я дома. На счету " + shop.wallet + "$");
 
                 Console.WriteLine("идти на работу или в магазин?");
                 Console.WriteLine("Выйти из игры?Для выхода введите (выйти)");
                 Console.WriteLine("Для сохранения игры введите (сохранить)");
                 string answer = Console.ReadLine();
-
+                
+                Console.Clear();
                 switch (answer)
                 {
                     case "работа":
-                        shop.wallet = Job(shop.wallet);
+                        shop.wallet = Job(shop.wallet, args);
                         break;
                     case "магазин":
-                        shop = Store(shop);
+                        shop = Store(shop,args);
                         break;
                     case "выйти":
                         option = false;
                         break;
+                    case "сохранить":
+                        Save.saveProduct(shop);
+                        break;
                     default:
                         Console.WriteLine("ОШИБКА. Проверьте правельность набора");
                         break;
+                        
                 }
             }
         }
 
-        static int Job(int wallet)
+        static int Job(int wallet, string[] args)
         {
-            
+            pictureJob.meJob(args);
+            Console.WriteLine("             Вы пришли на работу");
             Console.WriteLine("Начать работу?");
             bool option = true;
             while (option)
@@ -90,16 +100,18 @@ namespace Market
                         break;
                 }
             }
+            Console.Clear();
             return wallet;
         }
 
-        static ShopKucha Store(ShopKucha shop)
+        static ShopKucha Store(ShopKucha shop, string[] args)
         {
             string answer;
             bool option = true;
             while (option)
             {
-                Console.WriteLine("Вы в магазине. Для выхода введите (домой)");
+                pictureMarket.meMarcet(args);
+                Console.WriteLine("              Вы в магазине. Для выхода введите (домой)");
                 Console.WriteLine("На данный момент в магазине есть:");
                 for (int i = 0; i < shop.price.Length; i++)
                 {
@@ -107,19 +119,23 @@ namespace Market
                 }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
                 answer = Console.ReadLine();
+                Console.Clear();
                 switch (answer)
                 {
                     case "да":
+                        pictureMarket.meMarcet(args);
                         shop.product = addProduct(shop.product);
                         shop.price = addPrice(shop.price);
                         break;
                     case "нет":
+                        pictureMarket.meMarcet(args);
                         shop.wallet = buy(shop);
                         break;
                     case "домой":
                         option = false;
                         break;
                     default:
+                        pictureMarket.meMarcet(args);
                         Console.WriteLine("ОШИБКА. Введите (да) или (нет). Для выхода из магазина введите (домой)");
                         break;
                 }
@@ -167,6 +183,7 @@ namespace Market
                 }
             }
             price = priceNext;
+            Console.Clear();
             return price;
         }
 
@@ -193,7 +210,93 @@ namespace Market
                         break;
                 }
             }
+            Console.Clear();
             return shop.wallet;
+        }
+
+        
+    }
+
+    public class Save
+    {
+        public static void saveProduct(Program.ShopKucha shop)
+        {
+            string writeProduct = "Product.txt";
+            string writePrice = "Price.txt";
+            string writeWallet = "Wallet.txt";
+
+            StreamWriter sw = new StreamWriter(writeWallet, false, System.Text.Encoding.Default);
+            StreamWriter spt = new StreamWriter(writeProduct, false, System.Text.Encoding.Default);
+            StreamWriter spe = new StreamWriter(writePrice, false, System.Text.Encoding.Default);
+            try
+            {
+                sw.WriteLine(shop.wallet);
+                for (int i = 0; i < shop.product.Length; i++)
+                {
+                    spt.WriteLine(shop.product[i]);
+                    spe.WriteLine(shop.price[i]);
+                }
+            }
+            catch (Exception x)
+            {
+                Console.WriteLine(x.Message);
+            }
+            finally
+            {
+                sw.Close();
+                spt.Close();
+                spe.Close();
+                Console.WriteLine("Сохранение завершено");
+            }
+        }
+    }
+
+    public class pictureHouse
+    {
+        public static void meHouse(string[] args)
+        {
+            Console.WriteLine("                 /\\\\\\\\\\\\\\\\\\\\\\\\         ");
+            Console.WriteLine("                /  \\\\\\\\\\\\\\\\\\\\\\\\        ");
+            Console.WriteLine("               /    \\\\\\\\\\\\\\\\\\\\\\\\      ");
+            Console.WriteLine("              / (__) \\\\\\\\\\\\\\\\\\\\\\\\      ");
+            Console.WriteLine("             /________\\\\\\\\___\\\\\\\\\\      ");
+            Console.WriteLine("             | ___    |  | | |    |         ");
+            Console.WriteLine("             ||   |   |  |-+-|    |         ");
+            Console.WriteLine("             ||=  |   |  |_|_|    |         ");
+            Console.WriteLine("             ||___|___|___________|         ");
+        }
+    }
+
+    public class pictureMarket
+    {
+        public static void meMarcet(string[] args)
+        {
+            Console.WriteLine("                  _________________________________                                    ");
+            Console.WriteLine("                 |         ________________        |   ");
+            Console.WriteLine("                 |        |_____СИЛЬПО_____|       |    ");
+            Console.WriteLine("                 |        ___________________      |    ");
+            Console.WriteLine("                 |       /  ДОБРО ПОЖАЛОВАТЬ \\\\    |    ");
+            Console.WriteLine("                 |      /_____________________\\\\   |    ");
+            Console.WriteLine("                 |        | ____       ____ |      |    ");
+            Console.WriteLine("                 |        ||    |     |    ||      |    ");
+            Console.WriteLine("                 |        || =  |     |  = ||      |    ");
+            Console.WriteLine("                 |________||____|_____|____||______|                                     ");
+        }
+    }
+
+    public class pictureJob
+    {
+        public static void meJob(string[] args)
+        {
+            Console.WriteLine("                   _____        / /|          ");
+            Console.WriteLine("                 /_____/|      /_/ |          ");
+            Console.WriteLine("               __|     ||_ /|_|  |_|_______   ");
+            Console.WriteLine("             /   |_____|/ | | |  | /      /   ");
+            Console.WriteLine("            /____________#| |_|__|/______/|   ");
+            Console.WriteLine("            ||||        __| |          ||||   ");
+            Console.WriteLine("            ||||      /___|/|          ||||   ");
+            Console.WriteLine("            ||        |    ||          ||     ");
+            Console.WriteLine("            ||        |    |           ||     ");
         }
     }
 }
