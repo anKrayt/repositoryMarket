@@ -10,15 +10,15 @@ using System.IO;
 
 namespace Market
 {
-    public class Program
+    public static class Program
     {
         public struct ShopKucha
         {
-            public string[] product;
-            public int[] price;
+            public List<string> product;
+            public List<int> price;
             public int wallet;
 
-            public ShopKucha(string[] pt, int[] pe, int w)
+            public ShopKucha(List<string> pt, List<int> pe, int w)
             {
                 product = pt;
                 price = pe;
@@ -29,15 +29,15 @@ namespace Market
         static void Main(string[] args)
         {
             ShopKucha shop = new ShopKucha();
+            shop.product = new List<string>();
+            shop.product.Add("хлеб");
+            shop.product.Add("пиво");
+            shop.product.Add("чай");
 
-            shop.product = new string[3];
-            shop.product[0] = "хлеб";
-            shop.product[1] = "пиво";
-            shop.product[2] = "чай";
-            shop.price = new int[3];
-            shop.price[0] = 10;
-            shop.price[1] = 30;
-            shop.price[2] = 20;
+            shop.price = new List<int>();
+            shop.price.Add(10);
+            shop.price.Add(30);
+            shop.price.Add(20);
             shop.wallet = 0;
 
             bool option = true;
@@ -45,7 +45,7 @@ namespace Market
             while (option)
             {
                 pictureHouse.meHouse(args);
-                Console.Write("              Я дома. На счету " );
+                Console.Write("              Я дома. На счету ");
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{0} $", shop.wallet);
                 Console.ResetColor();
@@ -70,8 +70,9 @@ namespace Market
                 Console.Write("сохранить");
                 Console.ResetColor();
                 Console.WriteLine(")");
+                Console.WriteLine("для загрузки игры введите (загрузить)");
                 string answer = Console.ReadLine();
-                
+
                 Console.Clear();
                 switch (answer)
                 {
@@ -79,7 +80,7 @@ namespace Market
                         shop.wallet = Job(shop.wallet, args);
                         break;
                     case "магазин":
-                        shop = Store(shop,args);
+                        shop = Store(shop, args);
                         break;
                     case "выйти":
                         option = false;
@@ -87,10 +88,15 @@ namespace Market
                     case "сохранить":
                         Save.saveProduct(shop);
                         break;
+                    case "загрузить":
+                        shop.product = loading.productSave();
+                        shop.price = loading.priceSave();
+                        shop.wallet = loading.wallte();
+                        break;
                     default:
                         Console.WriteLine("ОШИБКА. Проверьте правельность набора");
                         break;
-                        
+
                 }
             }
         }
@@ -130,7 +136,6 @@ namespace Market
 
         static ShopKucha Store(ShopKucha shop, string[] args)
         {
-            string answer;
             bool option = true;
             while (option)
             {
@@ -142,7 +147,7 @@ namespace Market
                 Console.WriteLine(")");
 
                 Console.WriteLine("На данный момент в магазине есть:");
-                for (int i = 0; i < shop.price.Length; i++)
+                for (int i = 0; i < shop.price.Count; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     Console.Write(shop.product[i]);
@@ -153,7 +158,7 @@ namespace Market
                     Console.ResetColor();
                 }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
-                answer = Console.ReadLine();
+                var answer = Console.ReadLine();
                 Console.Clear();
                 switch (answer)
                 {
@@ -170,7 +175,6 @@ namespace Market
                         option = false;
                         break;
                     default:
-                        pictureMarket.meMarcet(args);
                         Console.WriteLine("ОШИБКА. Введите (да) или (нет). Для выхода из магазина введите (домой)");
                         break;
                 }
@@ -178,46 +182,38 @@ namespace Market
             return shop;
         }
 
-        static string[] addProduct(string[] product)
+        static List<string> addProduct(List<string> product)
         {
-            string[] productNext = new string[product.Length + 1];
+
             Console.WriteLine("Введите название товара");
-            for (int i = 0; i < product.Length; i++)
-            {
-                productNext[i] = product[i];
-            }
-            productNext[productNext.Length - 1] = Console.ReadLine();
-            product = productNext;
+            string answer = Console.ReadLine();
+            product.Add(answer);
             return product;
         }
 
-        static int[] addPrice(int[] price)
+        static List<int> addPrice(List<int> price)
         {
-            int[] priceNext = new int[price.Length + 1];
-            for (int i = 0; i < price.Length; i++)
-            {
-
-                priceNext[i] = price[i];
-
-            }
             Console.WriteLine("Введите цену товара");
             bool result = false;
             while (!result)
             {
-                result = int.TryParse(Console.ReadLine(), out priceNext[priceNext.Length - 1]);
+                int num;
+                result = int.TryParse(Console.ReadLine(), out num);
                 switch (result)
                 {
                     case false:
                         Console.WriteLine("Попробуйте использовать целые числа");
                         break;
+                    case true:
+                        price.Add(num);
+                        break;
                 }
-                if (priceNext[priceNext.Length - 1] < 0)
+                if (price[price.Count - 1] < 0)
                 {
                     result = false;
                     Console.WriteLine("Использование отрецательных чисел запрещено");
                 }
             }
-            price = priceNext;
             Console.Clear();
             return price;
         }
@@ -228,13 +224,23 @@ namespace Market
             bool result = true;
             while (result)
             {
+                for (int i = 0; i < shop.price.Count; i++)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.Write(shop.product[i]);
+                    Console.ResetColor();
+                    Console.Write("-");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(shop.price[i]);
+                    Console.ResetColor();
+                }
                 Console.Write("Что вы хотите купить? для выхода из торговой зоны введите (");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("ничего");
                 Console.ResetColor();
                 Console.WriteLine(")");
                 option = Console.ReadLine();
-                for (int i = 0; i < shop.product.Length; i++)
+                for (int i = 0; i < shop.product.Count; i++)
                 {
                     if (option == shop.product[i])
                     {
@@ -252,29 +258,25 @@ namespace Market
             Console.Clear();
             return shop.wallet;
         }
-
-        
     }
 
     public class Save
     {
         public static void saveProduct(Program.ShopKucha shop)
         {
-            string writeProduct = "Product.txt";
-            string writePrice = "Price.txt";
-            string writeWallet = "Wallet.txt";
+            string writeProduct = "allSave.txt";
 
-            StreamWriter sw = new StreamWriter(writeWallet, false, System.Text.Encoding.Default);
+
             StreamWriter spt = new StreamWriter(writeProduct, false, System.Text.Encoding.Default);
-            StreamWriter spe = new StreamWriter(writePrice, false, System.Text.Encoding.Default);
             try
             {
-                sw.WriteLine(shop.wallet);
-                for (int i = 0; i < shop.product.Length; i++)
+                for (int i = 0; i < shop.product.Count; i++)
                 {
                     spt.WriteLine(shop.product[i]);
-                    spe.WriteLine(shop.price[i]);
+                    spt.WriteLine(shop.price[i]);
                 }
+                spt.WriteLine(shop.wallet);
+                Console.WriteLine("Сохранение завершено");
             }
             catch (Exception x)
             {
@@ -282,11 +284,79 @@ namespace Market
             }
             finally
             {
-                sw.Close();
                 spt.Close();
-                spe.Close();
-                Console.WriteLine("Сохранение завершено");
             }
+        }
+    }
+
+    public static class loading
+    {
+        public static List<string> productSave()
+        {
+            List<string> product = new List<string>();
+            string writeProduct = "allSave.txt";
+            int num = System.IO.File.ReadAllLines("allSave.txt").Length;
+
+            try
+            {
+                using (StreamReader spt = new StreamReader(writeProduct, System.Text.Encoding.Default))
+                {
+                    string line;
+                    for (int i = 0; i < num - 1; i += 2)
+                    {
+                        line = spt.ReadLine();
+                        product.Add(line);
+                        spt.ReadLine();
+                    }
+                }
+
+            }
+            catch (FormatException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return product;
+        }
+
+        public static List<int> priceSave()
+        {
+            List<int> price = new List<int>();
+            string writePrice = "allSave.txt";
+            int num = System.IO.File.ReadAllLines("allSave.txt").Length;
+
+            try
+            {
+                using (StreamReader spe = new StreamReader(writePrice, System.Text.Encoding.Default))
+                {
+                    int line;
+                    for (int i = 0; i < num - 1; i += 2)
+                    {
+                        spe.ReadLine();
+                        line = Convert.ToInt32(spe.ReadLine());
+                        price.Add(line);
+                    }
+                    Console.WriteLine("Закгрузка прошла успешно");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return price;
+        }
+
+        public static int wallte()
+        {
+            int wallet;
+            string readWallet = "allSave.txt";
+            int num = System.IO.File.ReadAllLines("allSave.txt").Length;
+            using (StreamReader sw = new StreamReader(readWallet, System.Text.Encoding.Default))
+            {
+                string line = File.ReadLines("allSave.txt").Skip(num - 1).First();
+                wallet = Convert.ToInt32(line);
+
+            }
+            return wallet;
         }
     }
 
