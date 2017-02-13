@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Market.io;
 
 namespace Market
 {
@@ -86,12 +87,69 @@ namespace Market
                         option = false;
                         break;
                     case "сохранить":
-                        Save.saveProduct(shop);
+                        bool x = true;
+                        Console.Write("какой тип сохранения хотите выбрать? ");
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("текст");
+                        Console.ResetColor();
+                        Console.Write("овый или ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("бин");
+                        Console.ResetColor();
+                        Console.WriteLine("арный?");
+                        while (x)
+                        {
+                            answer = Console.ReadLine();
+                            switch (answer)
+                            {
+                                case "текст":
+                                    Save.saveProduct(shop);
+                                    x = false;
+                                    break;
+                                case "бин":
+                                    Save.saveB(shop);
+                                    x = false;
+                                    break;
+                                default:
+                                    Console.WriteLine(" ОШИБКА!Введите 'текст' или 'бин'.");
+                                    break;
+                            }
+                        }
                         break;
                     case "загрузить":
-                        shop.product = loading.productSave();
-                        shop.price = loading.priceSave();
-                        shop.wallet = loading.wallte();
+                        bool y = true;
+                        Console.Write("какой тип загрузки хотите выбрать? ");
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("текст");
+                        Console.ResetColor();
+                        Console.Write("овый или ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("бин");
+                        Console.ResetColor();
+                        Console.WriteLine("арный?");
+                        while (y)
+                        {
+                            answer = Console.ReadLine();
+                            switch (answer)
+                            {
+                                case "текст":
+                                    shop.product = loading.productSave();
+                                    shop.price = loading.priceSave();
+                                    shop.wallet = loading.wallte();
+                                    y = false;
+                                    break;
+                                case "бин":
+                                    shop.product.Clear();
+                                    shop.price.Clear();
+                                    shop = loading.binarySave(shop);
+                                    y = false;
+                                    break;
+                                default:
+                                    Console.WriteLine(" ОШИБКА!Введите 'текст' или 'бин'.");
+                                    break;
+                            }
+                        }
+
                         break;
                     default:
                         Console.WriteLine("ОШИБКА. Проверьте правельность набора");
@@ -257,106 +315,6 @@ namespace Market
             }
             Console.Clear();
             return shop.wallet;
-        }
-    }
-
-    public class Save
-    {
-        public static void saveProduct(Program.ShopKucha shop)
-        {
-            string writeProduct = "allSave.txt";
-
-
-            StreamWriter spt = new StreamWriter(writeProduct, false, System.Text.Encoding.Default);
-            try
-            {
-                for (int i = 0; i < shop.product.Count; i++)
-                {
-                    spt.WriteLine(shop.product[i]);
-                    spt.WriteLine(shop.price[i]);
-                }
-                spt.WriteLine(shop.wallet);
-                Console.WriteLine("Сохранение завершено");
-            }
-            catch (Exception x)
-            {
-                Console.WriteLine(x.Message);
-            }
-            finally
-            {
-                spt.Close();
-            }
-        }
-    }
-
-    public static class loading
-    {
-        public static List<string> productSave()
-        {
-            List<string> product = new List<string>();
-            string writeProduct = "allSave.txt";
-            int num = System.IO.File.ReadAllLines("allSave.txt").Length;
-
-            try
-            {
-                using (StreamReader spt = new StreamReader(writeProduct, System.Text.Encoding.Default))
-                {
-                    string line;
-                    for (int i = 0; i < num - 1; i += 2)
-                    {
-                        line = spt.ReadLine();
-                        product.Add(line);
-                        spt.ReadLine();
-                    }
-                }
-
-            }
-            catch (FormatException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            return product;
-        }
-
-        public static List<int> priceSave()
-        {
-            List<int> price = new List<int>();
-            string writePrice = "allSave.txt";
-            int num = System.IO.File.ReadAllLines("allSave.txt").Length;
-
-            try
-            {
-                using (StreamReader spe = new StreamReader(writePrice, System.Text.Encoding.Default))
-                {
-                    int line;
-                    for (int i = 0; i < num - 1; i += 2)
-                    {
-                        spe.ReadLine();
-                        line = Convert.ToInt32(spe.ReadLine());
-                        price.Add(line);
-                    }
-                    Console.WriteLine("Закгрузка прошла успешно");
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            return price;
-        }
-
-        public static int wallte()
-        {
-            int wallet;
-            string readWallet = "allSave.txt";
-            int num = System.IO.File.ReadAllLines("allSave.txt").Length;
-            using (StreamReader sw = new StreamReader(readWallet, System.Text.Encoding.Default))
-            {
-                string line = File.ReadLines("allSave.txt").Skip(num - 1).First();
-                wallet = Convert.ToInt32(line);
-
-            }
-            return wallet;
         }
     }
 
