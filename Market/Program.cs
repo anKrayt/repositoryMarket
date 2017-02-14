@@ -22,17 +22,17 @@ namespace Market
 
         static void Main(string[] args)
         {
-            ShopKucha shop = new ShopKucha();
-            shop.productList = new List<string>();
-            shop.productList.Add("хлеб");
-            shop.productList.Add("пиво");
-            shop.productList.Add("чай");
+            ShopKucha shopStruct = new ShopKucha();
+            shopStruct.productList = new List<string>();
+            shopStruct.productList.Add("хлеб");
+            shopStruct.productList.Add("пиво");
+            shopStruct.productList.Add("чай");
 
-            shop.priceList = new List<int>();
-            shop.priceList.Add(10);
-            shop.priceList.Add(30);
-            shop.priceList.Add(20);
-            shop.wallet = 0;
+            shopStruct.priceList = new List<int>();
+            shopStruct.priceList.Add(10);
+            shopStruct.priceList.Add(30);
+            shopStruct.priceList.Add(20);
+            shopStruct.wallet = 0;
 
             bool option = true;
             while (option)
@@ -40,7 +40,7 @@ namespace Market
                 Picture.meHouse();
                 Console.Write("\tЯ дома. На счету");
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("{0} $", shop.wallet);
+                Console.WriteLine("{0} $", shopStruct.wallet);
                 Console.ResetColor();
 
                 Console.Write("Идти ");
@@ -70,10 +70,10 @@ namespace Market
                 switch (answer.ToLower())
                 {
                     case "работа":
-                        shop.wallet = Job(shop.wallet);
+                        shopStruct.wallet = Job(shopStruct.wallet);
                         break;
                     case "магазин":
-                        shop = Store(shop);
+                        shopStruct = Store(shopStruct);
                         break;
                     case "выйти":
                         option = false;
@@ -95,11 +95,11 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    Save.saveProduct(shop);
+                                    Save.saveProduct(shopStruct);
                                     x = false;
                                     break;
                                 case "бин":
-                                    Save.saveBinary(shop);
+                                    Save.saveBinary(shopStruct);
                                     x = false;
                                     break;
                                 default:
@@ -125,15 +125,15 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    shop.productList = Loading.productLoad();
-                                    shop.priceList = Loading.priceLoad();
-                                    shop.wallet = Loading.wallteLoad();
+                                    shopStruct.productList = Loading.productLoad();
+                                    shopStruct.priceList = Loading.priceLoad();
+                                    shopStruct.wallet = Loading.wallteLoad();
                                     y = false;
                                     break;
                                 case "бин":
-                                    shop.productList.Clear();
-                                    shop.priceList.Clear();
-                                    shop = Loading.binaryLoad(shop);
+                                    shopStruct.productList.Clear();
+                                    shopStruct.priceList.Clear();
+                                    shopStruct = Loading.binaryLoad(shopStruct);
                                     y = false;
                                     break;
                                 default:
