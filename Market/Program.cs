@@ -52,16 +52,14 @@ namespace Market
             shopStruct.priceList.Add(10);
             shopStruct.priceList.Add(30);
             shopStruct.priceList.Add(20);
-            Wallet = 0;
+            Wallet = 0f;
             bool option = true;
             while (option)
             {
-                
                 Picture.meHouse();
-                
                 Console.Write("\t{0} вы дома. На счету ", userName);
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("{0}$", wallet);
+                Console.WriteLine("{0:0.##}", wallet);
                 Console.ResetColor();
 
                 Console.Write("Идти ");
@@ -238,7 +236,7 @@ namespace Market
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine(shop.priceList[i]);
+                    Console.WriteLine("{0:0.##}",shop.priceList[i]);
                     Console.ResetColor();
                 }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
@@ -321,7 +319,7 @@ namespace Market
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine(shop.priceList[i]);
+                    Console.WriteLine("{0:0.##}", shop.priceList[i]);
                     Console.ResetColor();
                 }
                 Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", userName);
