@@ -25,12 +25,13 @@ namespace Market.io
                     streamWriterProduct.WriteLine(shop.productList[i]);
                     streamWriterProduct.WriteLine(shop.priceList[i]);
                 }
-                streamWriterProduct.WriteLine(shop.wallet);
+                streamWriterProduct.WriteLine(Program.Wallet);
                 Console.WriteLine("Сохранение завершено");
             }
             catch (Exception x)
             {
-                Console.WriteLine(x.Message);
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine(x.Message);
             }
             finally
             {
@@ -44,7 +45,7 @@ namespace Market.io
             {
                 using (BinaryWriter binaryWriteProduct = new BinaryWriter(File.Open(Constants.saveBinary, FileMode.OpenOrCreate)))
                 {
-                    binaryWriteProduct.Write(shop.wallet);
+                    binaryWriteProduct.Write(Program.Wallet);
                     for (int i = 0; i < shop.productList.Count; i++)
                     {
                         binaryWriteProduct.Write(shop.productList[i]);
@@ -56,14 +57,15 @@ namespace Market.io
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine(e.Message);
             }
         }
     }
 
     static class Loading
     {
-        public static List<string> productLoad()
+        public static List<string> ProductLoad()
         {
             List<string> product = new List<string>();
             int num = File.ReadAllLines(Constants.writeAndRead).Length;
@@ -83,14 +85,15 @@ namespace Market.io
             }
             catch (FormatException e)
             {
-                Console.WriteLine(e.Message);
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine(e.Message);
             }
             return product;
         }
 
-        public static List<int> priceLoad()
+        public static List<float> PriceLoad()
         {
-            List<int> price = new List<int>();
+            List<float> price = new List<float>();
             int LineСountFile = File.ReadAllLines(Constants.writeAndRead).Length;
 
             try
@@ -109,12 +112,13 @@ namespace Market.io
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine(e.Message);
             }
             return price;
         }
 
-        public static int wallteLoad()
+        public static float WalletLoad()
         {
             int wallet;
             int LineСountFile = File.ReadAllLines(Constants.writeAndRead).Length;
@@ -133,7 +137,7 @@ namespace Market.io
             {
                 using (BinaryReader binaryReaderProduct = new BinaryReader(File.Open(Constants.saveBinary, FileMode.Open)))
                 {
-                    shop.wallet = binaryReaderProduct.ReadInt32();
+                    Program.Wallet = binaryReaderProduct.ReadInt32();
                     while (binaryReaderProduct.PeekChar() > -1)
                     {
                         shop.productList.Add(binaryReaderProduct.ReadString());
@@ -143,7 +147,8 @@ namespace Market.io
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                TextWriter errorWriter = Console.Error;
+                errorWriter.WriteLine(e.Message);
             }
             return shop;
         }
