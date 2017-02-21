@@ -7,13 +7,18 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Net.Mail;
 using Market.io;
 
 namespace Market
 {
-    public static class Program
+    static class Program
     {
         static float wallet;
+
+        static List<string> productList = new List<string>();
+
+        static List<float> priceList = new List<float>();
 
         static string userName = Environment.UserName;
 
@@ -33,25 +38,15 @@ namespace Market
             get { return wallet; }
         }
 
-        public struct ShopKucha
-        {
-            public List<string> productList;
-            public List<float> priceList;
-            
-        }
-
         static void Main(string[] args)
         {
-            ShopKucha shopStruct = new ShopKucha();
-            shopStruct.productList = new List<string>();
-            shopStruct.productList.Add("хлеб");
-            shopStruct.productList.Add("пиво");
-            shopStruct.productList.Add("чай");
+            productList.Add("хлеб");
+            productList.Add("пиво");
+            productList.Add("чай");
 
-            shopStruct.priceList = new List<float>();
-            shopStruct.priceList.Add(10);
-            shopStruct.priceList.Add(30);
-            shopStruct.priceList.Add(20);
+            priceList.Add(10);
+            priceList.Add(30);
+            priceList.Add(20);
             Wallet = 0f;
             bool option = true;
             while (option)
@@ -95,7 +90,7 @@ namespace Market
                         Wallet = Job(Wallet);
                         break;
                     case "магазин":
-                        shopStruct = Store(shopStruct);
+                        Store(productList, priceList);
                         break;
                     case "выйти":
                         option = false;
@@ -118,11 +113,11 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    Save.saveProduct(shopStruct);
+                                    Save.saveProduct(productList, priceList);
                                     x = false;
                                     break;
                                 case "бин":
-                                    Save.saveBinary(shopStruct);
+                                    Save.saveBinary(productList, priceList);
                                     x = false;
                                     break;
                                 default:
@@ -134,7 +129,7 @@ namespace Market
                         }
                         break;
                     case "загрузить":
-                        bool y = true;
+                        bool loadComplete = true;
                         Console.Write("{0} какой тип загрузки хотите выбрать? ", userName);
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("текст");
@@ -145,22 +140,24 @@ namespace Market
                         Console.ResetColor();
                         Console.WriteLine("арный?");
                         Console.Beep();
-                        while (y)
+                        while (loadComplete)
                         {
                             answer = Console.ReadLine();
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    shopStruct.productList = Loading.ProductLoad();
-                                    shopStruct.priceList = Loading.PriceLoad();
+                                    productList = Loading.ProductLoad();
+                                    priceList = Loading.PriceLoad();
                                     Wallet = Loading.WalletLoad();
-                                    y = false;
+                                    loadComplete = false;
                                     break;
                                 case "бин":
-                                    shopStruct.productList.Clear();
-                                    shopStruct.priceList.Clear();
-                                    shopStruct = Loading.binaryLoad(shopStruct);
-                                    y = false;
+                                    productList.Clear();
+                                    priceList.Clear();
+                                    productList = Loading.binaryProductLoad(productList);
+                                    priceList = Loading.binaryPriceLoad(priceList);
+                                    Wallet = Loading.binaryWalletLoad(wallet);
+                                    loadComplete = false;
                                     break;
                                 default:
                                     Console.WriteLine(" ОШИБКА!{0} введите 'текст' или 'бин'.", userName);
@@ -216,7 +213,7 @@ namespace Market
             return wallet;
         }
 
-        static ShopKucha Store(ShopKucha shop)
+        static void Store(List<string> productList, List<float> priceList)
         {
             bool option = true;
             while (option)
@@ -229,14 +226,14 @@ namespace Market
                 Console.WriteLine(")");
 
                 Console.WriteLine("На данный момент в магазине есть:");
-                for (int i = 0; i < shop.priceList.Count; i++)
+                for (int i = 0; i < priceList.Count; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(shop.productList[i]);
+                    Console.Write(productList[i]);
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}",shop.priceList[i]);
+                    Console.WriteLine("{0:0.##}",priceList[i]);
                     Console.ResetColor();
                 }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
@@ -247,12 +244,12 @@ namespace Market
                 {
                     case "да":
                         Picture.meMarcet();
-                        shop.productList = AddProduct(shop.productList);
-                        shop.priceList = AddPrice(shop.priceList);
+                        productList = AddProduct(productList);
+                        priceList = AddPrice(priceList);
                         break;
                     case "нет":
                         Picture.meMarcet();
-                        Wallet = Buy(shop);
+                        Wallet = Buy(productList, priceList);
                         break;
                     case "домой":
                         option = false;
@@ -263,7 +260,6 @@ namespace Market
                         break;
                 }
             }
-            return shop;
         }
 
         static List<string> AddProduct(List<string> productList)
@@ -306,20 +302,20 @@ namespace Market
             return priceList;
         }
 
-        static float Buy(ShopKucha shop)
+        static float Buy(List<string> productList, List<float> priceList)
         {
             string answer;
             bool result = true;
             do
             {
-                for (int i = 0; i < shop.priceList.Count; i++)
+                for (int i = 0; i < priceList.Count; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(shop.productList[i]);
+                    Console.Write(productList[i]);
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", shop.priceList[i]);
+                    Console.WriteLine("{0:0.##}", priceList[i]);
                     Console.ResetColor();
                 }
                 Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", userName);
@@ -329,14 +325,14 @@ namespace Market
                 Console.WriteLine(')');
                 Console.Beep();
                 answer = Console.ReadLine();
-                for (int i = 0; i < shop.productList.Count; i++)
+                for (int i = 0; i < productList.Count; i++)
                 {
-                    if (answer.ToLower() == shop.productList[i])
+                    if (answer.ToLower() == productList[i])
                     {
-                        if (Wallet >= shop.priceList[i])
+                        if (Wallet >= priceList[i])
                         {
-                            Wallet -= shop.priceList[i];
-                            Console.WriteLine("Вы купили " + shop.productList[i] + " остаток на счету " + Wallet);
+                            Wallet -= priceList[i];
+                            Console.WriteLine("Вы купили " + productList[i] + " остаток на счету " + Wallet);
                             Console.Beep(500, 150);
                             Console.Beep(900, 600);
                         }
@@ -357,7 +353,7 @@ namespace Market
         }
     }
 
-    public class Picture
+    class Picture
     {
         public static void meHouse()
         {
