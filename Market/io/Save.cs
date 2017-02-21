@@ -26,7 +26,7 @@ namespace Market.io
                     streamWriterProduct.WriteLine(productList[i]);
                     streamWriterProduct.WriteLine(priceList[i]);
                 }
-                streamWriterProduct.WriteLine(Program.Wallet);
+                streamWriterProduct.WriteLine(HouseClass.Wallet);
                 Console.WriteLine("Сохранение завершено");
             }
             catch (Exception x)
@@ -46,7 +46,7 @@ namespace Market.io
             {
                 using (BinaryWriter binaryWriteProduct = new BinaryWriter(File.Open(Constants.fileNameBinary, FileMode.OpenOrCreate)))
                 {
-                    binaryWriteProduct.Write(Program.Wallet);
+                    binaryWriteProduct.Write(HouseClass.Wallet);
                     for (int i = 0; i < productList.Count; i++)
                     {
                         binaryWriteProduct.Write(productList[i]);
@@ -127,7 +127,6 @@ namespace Market.io
             {
                 string line = File.ReadLines(Constants.fileNameTxt).Skip(LineСountFile - 1).First();
                 wallet = Convert.ToSingle(line);
-
             }
             return wallet;
         }
@@ -181,7 +180,7 @@ namespace Market.io
             try
             {
                 using (BinaryReader binaryReaderPrice = new BinaryReader(File.Open(Constants.fileNameBinary, FileMode.Open)))
-                    Program.Wallet = binaryReaderPrice.ReadInt32();
+                    wallet = binaryReaderPrice.ReadSingle();
 
             }
             catch (Exception e)
