@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FridgeClass.cs" />
+    <Compile Include="SatietyClass.cs" />
     <Compile Include="StoreClass.cs" />
     <Compile Include="JobClass.cs" />
     <Compile Include="io\Save.cs" />

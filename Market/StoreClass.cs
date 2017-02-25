@@ -8,9 +8,10 @@ namespace Market
 {
     class StoreClass
     {
-        public static float Store(List<string> productList, List<float> priceList, string userName, float Wallet)
+        public static float Store(List<string> productList, List<float> priceList, string userName, float Wallet, List<string> productInFridge, List<int> countProductInFridgeList, List<int> satietyList)
         {
             bool replayStore = true;
+
             do
             {
                 Picture.meMarcet();
@@ -21,6 +22,7 @@ namespace Market
                 Console.WriteLine(")");
 
                 Console.WriteLine("На данный момент в магазине есть:");
+
                 for (int i = 0; i < priceList.Count; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -28,29 +30,34 @@ namespace Market
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", priceList[i]);
+                    Console.Write("{0:0.##}", priceList[i]);
                     Console.ResetColor();
+                    Console.WriteLine(" восполняет {0} сытости", satietyList[i]);
                 }
-                Console.WriteLine("Хотите добавить новый предмет в магазин?");
-                Console.Beep();
+
+                Console.WriteLine("Для добавления товара в магазин введите (добавить). Для покупки товаров введите (купить)");
+
                 var answer = Console.ReadLine().Trim().ToLower();
+
                 Console.Clear();
+
                 switch (answer)
                 {
-                    case "да":
+                    case "добавить":
                         Picture.meMarcet();
                         productList = AddProduct(productList);
                         priceList = AddPrice(priceList);
+                        satietyList = AddSatiety(satietyList);
                         break;
-                    case "нет":
+                    case "купить":
                         Picture.meMarcet();
-                        Wallet = Buy(productList, priceList, userName, Wallet);
+                        Wallet = Buy(productList, priceList, userName, Wallet, productInFridge, countProductInFridgeList, satietyList);
                         break;
                     case "домой":
                         replayStore = false;
                         break;
                     default:
-                        Console.WriteLine("ОШИБКА. Введите (да) или (нет). Для выхода из магазина введите (домой)");
+                        Console.WriteLine("ОШИБКА. Введите (добавить) или (купить). Для выхода из магазина введите (домой)");
                         Console.Beep(100, 500);
                         break;
                 }
@@ -61,28 +68,32 @@ namespace Market
         static List<string> AddProduct(List<string> productList)
         {
             Console.WriteLine("Введите название товара");
-            Console.Beep();
+
             string productName = Console.ReadLine().Trim().ToLower();
+
             productList.Add(productName);
+
             return productList;
         }
 
         static List<float> AddPrice(List<float> priceList)
         {
             Console.WriteLine("Введите цену товара");
-            Console.Beep();
-            bool result;
+            bool replayAddPrice;
+
             do
             {
                 float price;
-                result = float.TryParse(Console.ReadLine().Trim(), out price);
+                replayAddPrice = float.TryParse(Console.ReadLine().Trim(), out price);
+
                 if (price < 0)
                 {
-                    result = false;
-                    Console.WriteLine("Использование отрецательных чисел запрещено");
+                    replayAddPrice = false;
+                    Console.WriteLine("Использование отрицательных чисел запрещено");
                     Console.Beep(100, 500);
                 }
-                switch (result)
+
+                switch (replayAddPrice)
                 {
                     case false:
                         Console.WriteLine("Попробуйте использовать положительные числа. Для ввода дробного числа используйте (,)");
@@ -93,15 +104,49 @@ namespace Market
                         break;
                 }
 
-            } while (!result);
-            Console.Clear();
+            } while (!replayAddPrice);
             return priceList;
         }
 
-        static float Buy(List<string> productList, List<float> priceList, string userName, float Wallet)
+        static List<int> AddSatiety(List<int> satietyList)
+        {
+            Console.WriteLine("Введите какое количество сытости будет восполнять данный продукт.");
+            bool replayAddSatiety;
+
+            do
+            {
+                int satiety;
+
+                replayAddSatiety = int.TryParse(Console.ReadLine().Trim(), out satiety);
+
+                if (satiety < 0)
+                {
+                    replayAddSatiety = false;
+                    Console.WriteLine("Использование отрицательных чисел запрещено");
+                    Console.Beep(100, 500);
+                }
+
+                switch (replayAddSatiety)
+                {
+                    case false:
+                        Console.WriteLine("Попробуйте использовать целые положительные числа.");
+                        Console.Beep(100, 500);
+                        break;
+                    case true:
+                        satietyList.Add(satiety);
+                        break;
+                }
+            } while (!replayAddSatiety);
+            Console.Clear();
+            return satietyList;
+
+        } 
+
+        static float Buy(List<string> productList, List<float> priceList, string userName, float Wallet, List<string> productInFridge, List<int> countProductInFridgeList, List<int> satietyList)
         {
             string answer;
-            bool result = true;
+            bool replayBuy = true;
+
             do
             {
                 for (int i = 0; i < priceList.Count; i++)
@@ -111,26 +156,45 @@ namespace Market
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", priceList[i]);
+                    Console.Write("{0:0.##}", priceList[i]);
                     Console.ResetColor();
+                    Console.WriteLine(" восполняет {0} сытости", satietyList[i]);
                 }
+
                 Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", userName);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("назад");
                 Console.ResetColor();
                 Console.WriteLine(')');
-                Console.Beep();
+
                 answer = Console.ReadLine().Trim().ToLower();
+
                 for (int i = 0; i < productList.Count; i++)
                 {
                     if (answer.ToLower() == productList[i])
                     {
                         if (Wallet >= priceList[i])
                         {
+                            Console.Clear();
                             Wallet -= priceList[i];
                             Console.WriteLine("Вы купили " + productList[i] + " остаток на счету " + Wallet);
-                            Console.Beep(500, 150);
-                            Console.Beep(900, 600);
+
+                            //добавление в холодильник
+                            for (int j = 0; j < productInFridge.Count; j++)
+                            {
+                                if (productList[i] == productInFridge[j])
+                                {
+                                    countProductInFridgeList[j]++;
+                                    break;
+                                }
+                                if (j == productInFridge.Count - 1)
+                                {
+                                    productInFridge.Add(productList[i]);
+                                    countProductInFridgeList.Add(1);
+                                    break;
+                                }
+                            }
+                            Picture.meMarcet();
                         }
                         else
                         {
@@ -139,11 +203,12 @@ namespace Market
                         }
                     }
                 }
+
                 if (answer.ToLower() == "назад")
                 {
-                    result = false;
+                    replayBuy = false;
                 }
-            } while (result);
+            } while (replayBuy);
             Console.Clear();
             return Wallet;
         }

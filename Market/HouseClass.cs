@@ -14,15 +14,25 @@ namespace Market
 {
     static class HouseClass
     {
-        static float wallet;
+        static float wallet; //деньги
 
-        static List<string> productList = new List<string>();
+        
 
-        static List<float> priceList = new List<float>();
+        static List<int> satietyList = new List<int>(); //лист сытости
 
-        static string userName = Environment.UserName;
+        static List<string> productList = new List<string>(); //лист продуктов
 
-        public static float Wallet
+        static List<float> priceList = new List<float>(); //лист цен
+
+        static List<string> productInFridge = new List<string>(); //лист продуктов в холодильнике
+
+        static List<int> countProductInFridgeList = new List<int>(); //лист количества продуктов в холодильнике
+
+        static string userName = Environment.UserName; //имя пользователя
+
+        
+
+        public static float Wallet //свойство кошелька
         {
             set
             {
@@ -40,6 +50,18 @@ namespace Market
 
         static void Main(string[] args)
         {
+            satietyList.Add(15);
+            satietyList.Add(10);
+            satietyList.Add(5);
+
+            productInFridge.Add("хлеб");
+            productInFridge.Add("сок");
+            productInFridge.Add("яблоко");
+
+            countProductInFridgeList.Add(1);
+            countProductInFridgeList.Add(4);
+            countProductInFridgeList.Add(2);
+
             productList.Add("хлеб");
             productList.Add("пиво");
             productList.Add("чай");
@@ -49,13 +71,17 @@ namespace Market
             priceList.Add(20);
             Wallet = 0f;
             bool replayMainMenu = true;
-            while (replayMainMenu)
+            do
             {
                 Picture.meHouse();
                 Console.Write("\t{0} вы дома. На счету ", userName);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{0:0.##}", wallet);
                 Console.ResetColor();
+
+                Console.Write("Вы сыты на ");
+                Satiety.Count();
+                Console.WriteLine('%');
 
                 Console.Write("Идти ");
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -67,30 +93,36 @@ namespace Market
                 Console.ResetColor();
                 Console.WriteLine("?");
 
+                Console.WriteLine("Чтобы поесть введите (есть)");
+
                 Console.Write("Если хотите выйти из игры? Для выхода введите (");
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.Write("выйти");
                 Console.ResetColor();
                 Console.WriteLine(")");
-                
+
                 Console.Write("Для сохранения игры введите (");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("сохранить");
                 Console.ResetColor();
                 Console.WriteLine(")");
-                
+
                 Console.WriteLine("для загрузки игры введите (загрузить)");
-                Console.Beep();
                 string answer = Console.ReadLine().ToLower().Trim();
 
                 Console.Clear();
                 switch (answer)
                 {
+                    case "есть":
+                        FridgeClass.Food(productInFridge, countProductInFridgeList, satietyList);
+                        break;
                     case "работа":
+                        Satiety.ChangeCount(15, false);
                         Wallet = JobClass.Job(Wallet, userName);
                         break;
                     case "магазин":
-                        Wallet = StoreClass.Store(productList, priceList, userName, Wallet);
+                        Satiety.ChangeCount(15, false);
+                        Wallet = StoreClass.Store(productList, priceList, userName, Wallet, productInFridge, countProductInFridgeList, satietyList);
                         break;
                     case "выйти":
                         replayMainMenu = false;
@@ -106,7 +138,6 @@ namespace Market
                         Console.Write("бин");
                         Console.ResetColor();
                         Console.WriteLine("арный?");
-                        Console.Beep();
                         do
                         {
                             answer = Console.ReadLine();
@@ -126,7 +157,7 @@ namespace Market
                                     break;
                             }
                         } while (!replayFormatSave);
-                            break;
+                        break;
                     case "загрузить":
                         bool replayFormatLoad = true;
                         Console.Write("{0} какой тип загрузки хотите выбрать? ", userName);
@@ -138,7 +169,6 @@ namespace Market
                         Console.Write("бин");
                         Console.ResetColor();
                         Console.WriteLine("арный?");
-                        Console.Beep();
                         do
                         {
                             answer = Console.ReadLine();
@@ -164,18 +194,17 @@ namespace Market
                                     break;
                             }
                         } while (replayFormatLoad);
-
                         break;
                     default:
                         Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", userName);
                         Console.Beep(100, 500);
                         break;
-
                 }
-            }
+                replayMainMenu = Satiety.Result();
+            } while (replayMainMenu);
         }
 
-        
+
     }
 
     class Picture
@@ -225,6 +254,53 @@ namespace Market
             Console.WriteLine("\t||        |    ||          ||");
             Console.WriteLine("\t||        |    |           ||");
             Console.ResetColor();
+        }
+
+        public static void meFridge()
+        {
+            Console.WriteLine("          _________");
+            Console.WriteLine("         /        /|");
+            Console.WriteLine("        /        / |");
+            Console.WriteLine("       /_______ /__|___");
+            Console.Write("      |        | ");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write("%");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.Write("  *");
+            Console.ResetColor();
+            Console.WriteLine("  |");
+            Console.Write("      |        |");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(" +");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("   @");
+            Console.ResetColor();
+            Console.WriteLine(" |");
+            Console.Write("      |        |  ");
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            Console.Write("&");
+            Console.ResetColor();
+            Console.WriteLine("  _ |");
+            Console.Write("      |        |");
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.Write("#");
+            Console.ResetColor();
+            Console.WriteLine("      |");
+            Console.Write("      |        | ");
+            Console.ForegroundColor = ConsoleColor.DarkRed;
+            Console.Write("?");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.Write("  $");
+            Console.ResetColor();
+            Console.WriteLine("  |");
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("Э~~~~~");
+            Console.ResetColor();
+            Console.WriteLine("|________|_______|");
+            Console.WriteLine("      |________|/");
         }
     }
 }
