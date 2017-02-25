@@ -5,22 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Market
+{
+    class Satiety
     {
-        class Satiety
+        static int satietyInt = 100; //сытость
+
+        //возвращение свойства сытости
+        public static int SatietyInt
         {
-            static int satietyInt = 100; //сытость
+            get { return satietyInt; }
+        }
 
-            public static int SatietyInt
-            {
-                get { return satietyInt; }
-            } //свойство сытости
+        public static void Count()
+        {
+            Console.Write(SatietyInt);
+        }
 
-            public static void Count()
-            {
-                Console.Write(SatietyInt);
-            }
-
-            public static void ChangeCount(int nums, bool plusOrMinus)
+        public static void ChangeCount(int nums, bool plusOrMinus)
+        {
+            if (nums > 0)
             {
                 if (plusOrMinus)
                 {
@@ -31,40 +34,53 @@ namespace Market
                     satietyInt -= nums;
                 }
             }
+            else
+            {
+                Console.Error.WriteLine("Ошибка!");
+            }
+            
+        }
 
-            public static void SetCount(int satietyNew)
+        public static void SetCount(int satietyNew)
+        {
+            if (satietyNew > 0)
             {
                 satietyInt = satietyNew;
             }
-
-            public static bool Result()
+            else
             {
-                bool replayMainMenu = true;
-
-                if (SatietyInt <= -75)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Вы умерли от голода.");
-                    Console.WriteLine("\tКОНЕЦ ИГРЫ (>_<)");
-                    replayMainMenu = false;
-                    Console.ReadKey();
-                }
-                else if (SatietyInt <= -50)
-                {
-                    Console.Clear();
-                    Console.WriteLine("У вас голодный обморок");
-                }
-                else if (SatietyInt <= -25)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Вы хотите ЖРАТЬ");
-                }
-                else if (SatietyInt == 0)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Вы голодны. Пора бы поесть");
-                }
-                return replayMainMenu;
+                Console.Error.WriteLine("Ошибка!");
             }
         }
+
+        public static bool Result()
+        {
+            bool replayMainMenu = true;
+
+            if (SatietyInt <= -75)
+            {
+                Console.Clear();
+                Console.WriteLine("Вы умерли от голода.");
+                Console.WriteLine("\tКОНЕЦ ИГРЫ (>_<)");
+                replayMainMenu = false;
+                Console.ReadKey();
+            }
+            else if (SatietyInt <= -50)
+            {
+                Console.Clear();
+                Console.WriteLine("У вас голодный обморок");
+            }
+            else if (SatietyInt <= -25)
+            {
+                Console.Clear();
+                Console.WriteLine("Вы хотите ЖРАТЬ");
+            }
+            else if (SatietyInt == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("Вы голодны. Пора бы поесть");
+            }
+            return replayMainMenu;
+        }
     }
+}

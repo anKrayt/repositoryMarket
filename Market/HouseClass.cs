@@ -16,8 +16,6 @@ namespace Market
     {
         static float wallet; //деньги
 
-        
-
         static List<int> satietyList = new List<int>(); //лист сытости
 
         static List<string> productList = new List<string>(); //лист продуктов
@@ -29,8 +27,6 @@ namespace Market
         static List<int> countProductInFridgeList = new List<int>(); //лист количества продуктов в холодильнике
 
         static string userName = Environment.UserName; //имя пользователя
-
-        
 
         public static float Wallet //свойство кошелька
         {
@@ -69,8 +65,11 @@ namespace Market
             priceList.Add(10);
             priceList.Add(30);
             priceList.Add(20);
+
             Wallet = 0f;
+
             bool replayMainMenu = true;
+
             do
             {
                 Picture.meHouse();
