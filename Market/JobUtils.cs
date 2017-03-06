@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Market
 {
-    class JobClass
+    class JobUtils
     {
-        public static float Job(float Wallet ,string userName)
+        public static float Job(float Wallet, string username)
         {
             Picture.meJob();
-            Console.WriteLine("\t{0} вы пришли на работу", userName);
+            Console.WriteLine("\t{0} вы пришли на работу", username);
             Console.Write("Вы сыты на ");
             Satiety.Count();
             Console.WriteLine('%');
@@ -24,7 +24,7 @@ namespace Market
                 switch (answer.ToLower())
                 {
                     case "да":
-                        Satiety.ChangeCount(5,false);
+                        Satiety.ChangeCount(5, false);
                         Wallet += 100;
                         Console.Write("Получено 100$. На счету ");
                         Console.ForegroundColor = ConsoleColor.Yellow;
@@ -42,7 +42,7 @@ namespace Market
                         Wallet -= 100;
                         Console.WriteLine(
                             "{0} вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ " + Wallet +
-                            " $. Вытащить лопату из задницы и продолжить работу?", userName);
+                            " $. Вытащить лопату из задницы и продолжить работу?", username);
                         Console.Beep(100, 500);
                         break;
                 }

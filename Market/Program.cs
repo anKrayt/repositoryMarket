@@ -12,7 +12,7 @@ using Market.io;
 
 namespace Market
 {
-    static class HouseClass
+    static class Program
     {
         static float wallet; //деньги
 
@@ -51,8 +51,8 @@ namespace Market
             satietyList.Add(5);
 
             productInFridge.Add("хлеб");
-            productInFridge.Add("сок");
-            productInFridge.Add("яблоко");
+            productInFridge.Add("пиво");
+            productInFridge.Add("чай");
 
             countProductInFridgeList.Add(1);
             countProductInFridgeList.Add(4);
@@ -113,15 +113,15 @@ namespace Market
                 switch (answer)
                 {
                     case "есть":
-                        FridgeClass.Food(productInFridge, countProductInFridgeList, satietyList);
+                        FridgeUtils.Food(productInFridge, countProductInFridgeList, satietyList);
                         break;
                     case "работа":
                         Satiety.ChangeCount(15, false);
-                        Wallet = JobClass.Job(Wallet, userName);
+                        Wallet = JobUtils.Job(Wallet, userName);
                         break;
                     case "магазин":
                         Satiety.ChangeCount(15, false);
-                        Wallet = StoreClass.Store(productList, priceList, userName, Wallet, productInFridge, countProductInFridgeList, satietyList);
+                        Wallet = StoreUtils.Store(productList, priceList, userName, Wallet, productInFridge, countProductInFridgeList, satietyList);
                         break;
                     case "выйти":
                         replayMainMenu = false;
@@ -143,11 +143,11 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    Save.saveProduct(productList, priceList);
+                                    SaveUtils.saveProduct(productList, priceList);
                                     replayFormatSave = true;
                                     break;
                                 case "бин":
-                                    Save.saveBinary(productList, priceList);
+                                    SaveUtils.saveBinary(productList, priceList);
                                     replayFormatSave = true;
                                     break;
                                 default:
@@ -174,17 +174,17 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    productList = Loading.ProductLoad();
-                                    priceList = Loading.PriceLoad();
-                                    Wallet = Loading.WalletLoad();
+                                    productList = LoadingUtils.ProductLoad();
+                                    priceList = LoadingUtils.PriceLoad();
+                                    Wallet = LoadingUtils.WalletLoad();
                                     replayFormatLoad = false;
                                     break;
                                 case "бин":
                                     productList.Clear();
                                     priceList.Clear();
-                                    productList = Loading.binaryProductLoad(productList);
-                                    priceList = Loading.binaryPriceLoad(priceList);
-                                    Wallet = Loading.binaryWalletLoad(wallet);
+                                    productList = LoadingUtils.binaryProductLoad(productList);
+                                    priceList = LoadingUtils.binaryPriceLoad(priceList);
+                                    Wallet = LoadingUtils.binaryWalletLoad(wallet);
                                     replayFormatLoad = false;
                                     break;
                                 default:

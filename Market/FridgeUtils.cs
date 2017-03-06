@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Market
 {
-    static class FridgeClass //холодильник
+    static class FridgeUtils //холодильник
     {
         public static void Food(List<string> productInFridge, List<int> countProductInFridgeList, List<int> satietyList)
         {
@@ -57,7 +57,7 @@ namespace Market
                             productInFridge.RemoveAt(i);
                             countProductInFridgeList.RemoveAt(i);
                             Satiety.ChangeCount(satietyList[i], true);
-                            
+
                             if (Satiety.SatietyInt >= 110 && Satiety.SatietyInt <= 125)
                             {
                                 Console.ForegroundColor = ConsoleColor.Cyan;
@@ -110,6 +110,7 @@ namespace Market
                     }
                 }
             } while (replayFood);
+            Console.Clear();
         }
     }
 }

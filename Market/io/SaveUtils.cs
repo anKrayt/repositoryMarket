@@ -13,13 +13,13 @@ namespace Market.io
         public const string fileNameTxt = "TxtSave.txt";
 
         public const string fileNameBinary = "BinarySave.dat";
-    } 
+    }
 
-    class Save
+    class SaveUtils
     {
         public static void saveProduct(List<string> productList, List<float> priceList)
         {
-                StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, Encoding.Default);
+            StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, Encoding.Default);
 
             try
             {
@@ -28,7 +28,7 @@ namespace Market.io
                     streamWriterProduct.WriteLine(productList[i]);
                     streamWriterProduct.WriteLine(priceList[i]);
                 }
-                streamWriterProduct.WriteLine(HouseClass.Wallet);
+                streamWriterProduct.WriteLine(Program.Wallet);
                 Console.WriteLine("Сохранение завершено");
             }
             catch (Exception e)
@@ -47,7 +47,7 @@ namespace Market.io
             {
                 using (BinaryWriter binaryWriteProduct = new BinaryWriter(File.Open(Constants.fileNameBinary, FileMode.OpenOrCreate)))
                 {
-                    binaryWriteProduct.Write(HouseClass.Wallet);
+                    binaryWriteProduct.Write(Program.Wallet);
                     for (int i = 0; i < productList.Count; i++)
                     {
                         binaryWriteProduct.Write(productList[i]);
@@ -64,7 +64,7 @@ namespace Market.io
         }
     }
 
-    class Loading
+    class LoadingUtils
     {
         public static List<string> ProductLoad()
         {

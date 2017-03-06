@@ -38,7 +38,7 @@ namespace Market
             {
                 Console.Error.WriteLine("Ошибка!");
             }
-            
+
         }
 
         public static void SetCount(int satietyNew)

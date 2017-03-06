@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Market
 {
-    class StoreClass
+    class StoreUtils
     {
         public static float Store(List<string> productList, List<float> priceList, string userName, float Wallet, List<string> productInFridge, List<int> countProductInFridgeList, List<int> satietyList)
         {
@@ -140,7 +140,7 @@ namespace Market
             Console.Clear();
             return satietyList;
 
-        } 
+        }
 
         static float Buy(List<string> productList, List<float> priceList, string userName, float Wallet, List<string> productInFridge, List<int> countProductInFridgeList, List<int> satietyList)
         {
