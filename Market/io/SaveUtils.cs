@@ -11,13 +11,13 @@ namespace Market.io
     class Constants
     {
         public const string fileNameTxt = "TxtSave.txt";
-    } 
+    }
 
-    class Save
+    class SaveUtils
     {
         public static void saveProduct(List<string> productList, List<float> priceList)
         {
-                StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, System.Text.Encoding.Default);
+            StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, System.Text.Encoding.Default);
             try
             {
                 for (int i = 0; i < productList.Count; i++)
@@ -30,8 +30,7 @@ namespace Market.io
             }
             catch (Exception x)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(x.Message);
+                Console.Error.WriteLine(x.Message);
             }
             finally
             {
@@ -40,7 +39,7 @@ namespace Market.io
         }
     }
 
-    class Loading
+    class LoadingUtils
     {
         public static List<string> ProductLoad()
         {
@@ -61,8 +60,7 @@ namespace Market.io
             }
             catch (FormatException e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
             return product;
         }
@@ -88,8 +86,7 @@ namespace Market.io
             }
             catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
             return price;
         }
