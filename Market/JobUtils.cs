@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Market
 {
-    class JobClass
+    class JobUtils
     {
-        public static float Job(float wallet,string userName)
+        public static void Job(float Wallet, string userName)
         {
-            Picture.meJob();
+            PictureUtils.DrawJob();
             Console.WriteLine("\t{0} вы пришли на работу", userName);
             Console.WriteLine("Начать работу?");
             Console.Beep();
@@ -21,10 +21,10 @@ namespace Market
                 switch (answer.ToLower())
                 {
                     case "да":
-                        wallet += 100;
+                        Wallet += 100;
                         Console.Write("Получено 100 $. на счету ");
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write("{0} $", wallet);
+                        Console.Write("{0} $", Wallet);
                         Console.ResetColor();
                         Console.WriteLine(". Продолжыть работу?");
                         Console.Beep(500, 150);
@@ -34,16 +34,15 @@ namespace Market
                         replayWork = false;
                         break;
                     default:
-                        wallet -= 100;
+                        Wallet -= 100;
                         Console.WriteLine(
-                            "{0} вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ " + wallet +
+                            "{0} вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ " + Wallet +
                             " $. Вытащить лопату из задницы и продолжить работу?", userName);
                         Console.Beep(100, 500);
                         break;
                 }
             } while (replayWork);
             Console.Clear();
-            return wallet;
         }
     }
 }

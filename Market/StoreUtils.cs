@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Market
 {
-    class StoreClass
+    class StoreUtils
     {
         public static float Store(List<string> productList, List<float> priceList, string userName, float Wallet)
         {
             bool replayStore = true;
             do
             {
-                Picture.meMarcet();
+                PictureUtils.DrawMarcet();
                 Console.Write("\t{0} вы в магазине. На счету {1} Для выхода введите (", userName, Wallet);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("домой");
@@ -38,12 +38,12 @@ namespace Market
                 switch (answer)
                 {
                     case "да":
-                        Picture.meMarcet();
+                        PictureUtils.DrawMarcet();
                         productList = AddProduct(productList);
                         priceList = AddPrice(priceList);
                         break;
                     case "нет":
-                        Picture.meMarcet();
+                        PictureUtils.DrawMarcet();
                         Wallet = Buy(productList, priceList, userName, Wallet);
                         break;
                     case "домой":
@@ -62,8 +62,7 @@ namespace Market
         {
             Console.WriteLine("Введите название товара");
             Console.Beep();
-            string productName = Console.ReadLine().Trim().ToLower();
-            productList.Add(productName);
+            productList.Add(Console.ReadLine().Trim().ToLower());
             return productList;
         }
 

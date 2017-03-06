@@ -12,7 +12,7 @@ using Market.io;
 
 namespace Market
 {
-    static class HouseClass
+    static class Program
     {
         static float wallet;
 
@@ -20,7 +20,7 @@ namespace Market
 
         static List<float> priceList = new List<float>();
 
-        static string userName = Environment.UserName;
+        static string username = Environment.UserName;
 
         public static float Wallet
         {
@@ -51,8 +51,8 @@ namespace Market
             bool replayMainMenu = true;
             while (replayMainMenu)
             {
-                Picture.meHouse();
-                Console.Write("\t{0} вы дома. На счету ", userName);
+                PictureUtils.DrawHouse();
+                Console.Write("\t{0} вы дома. На счету ", username);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{0:0.##}", wallet);
                 Console.ResetColor();
@@ -87,17 +87,17 @@ namespace Market
                 switch (answer)
                 {
                     case "работа":
-                        Wallet = JobClass.Job(Wallet, userName);
+                        JobUtils.Job(Wallet, username);
                         break;
                     case "магазин":
-                        Wallet = StoreClass.Store(productList, priceList, userName, Wallet);
+                        Wallet = StoreUtils.Store(productList, priceList, username, Wallet);
                         break;
                     case "выйти":
                         replayMainMenu = false;
                         break;
                     case "сохранить":
                         bool replayFormatSave = false;
-                        Console.Write("{0} какой тип сохранения хотите выбрать? ", userName);
+                        Console.Write("{0} какой тип сохранения хотите выбрать? ", username);
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("текст");
                         Console.ResetColor();
@@ -113,15 +113,15 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    Save.saveProduct(productList, priceList);
+                                    SaveUtils.saveProduct(productList, priceList);
                                     replayFormatSave = true;
                                     break;
                                 case "бин":
-                                    Save.saveBinary(productList, priceList);
+                                    SaveUtils.saveBinary(productList, priceList);
                                     replayFormatSave = true;
                                     break;
                                 default:
-                                    Console.WriteLine(" ОШИБКА! {0} Введите 'текст' или 'бин'.", userName);
+                                    Console.WriteLine(" ОШИБКА! {0} Введите 'текст' или 'бин'.", username);
                                     Console.Beep(100, 500);
                                     break;
                             }
@@ -129,7 +129,7 @@ namespace Market
                             break;
                     case "загрузить":
                         bool replayFormatLoad = true;
-                        Console.Write("{0} какой тип загрузки хотите выбрать? ", userName);
+                        Console.Write("{0} какой тип загрузки хотите выбрать? ", username);
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("текст");
                         Console.ResetColor();
@@ -145,21 +145,21 @@ namespace Market
                             switch (answer.ToLower())
                             {
                                 case "текст":
-                                    productList = Loading.ProductLoad();
-                                    priceList = Loading.PriceLoad();
-                                    Wallet = Loading.WalletLoad();
+                                    productList = LoadingUtils.ProductLoad();
+                                    priceList = LoadingUtils.PriceLoad();
+                                    Wallet = LoadingUtils.WalletLoad();
                                     replayFormatLoad = false;
                                     break;
                                 case "бин":
                                     productList.Clear();
                                     priceList.Clear();
-                                    productList = Loading.binaryProductLoad(productList);
-                                    priceList = Loading.binaryPriceLoad(priceList);
-                                    Wallet = Loading.binaryWalletLoad(wallet);
+                                    productList = LoadingUtils.binaryProductLoad(productList);
+                                    priceList = LoadingUtils.binaryPriceLoad(priceList);
+                                    Wallet = LoadingUtils.binaryWalletLoad(wallet);
                                     replayFormatLoad = false;
                                     break;
                                 default:
-                                    Console.WriteLine(" ОШИБКА!{0} введите 'текст' или 'бин'.", userName);
+                                    Console.WriteLine(" ОШИБКА!{0} введите 'текст' или 'бин'.", username);
                                     Console.Beep(100, 500);
                                     break;
                             }
@@ -167,7 +167,7 @@ namespace Market
 
                         break;
                     default:
-                        Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", userName);
+                        Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", username);
                         Console.Beep(100, 500);
                         break;
 
@@ -178,9 +178,9 @@ namespace Market
         
     }
 
-    class Picture
+    class PictureUtils
     {
-        public static void meHouse()
+        public static void DrawHouse()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\t    /\\\\\\\\\\\\\\\\\\\\\\\\");
@@ -196,7 +196,7 @@ namespace Market
 
         }
 
-        public static void meMarcet()
+        public static void DrawMarcet()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("\t _________________________________");
@@ -212,7 +212,7 @@ namespace Market
             Console.ResetColor();
         }
 
-        public static void meJob()
+        public static void DrawJob()
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("\t       _____        / /|");
