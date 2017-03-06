@@ -51,7 +51,7 @@ namespace Market
             bool replayHouse = true;
             do
             {
-                Picture.meHouse();
+                PictureUtils.meHouse();
                 Console.Write("\t{0} вы дома. На счету ", username);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{0:0.##}", Wallet);
@@ -112,7 +112,7 @@ namespace Market
 
         static void GoToJob()
         {
-            Picture.drawJob();
+            PictureUtils.drawJob();
             Console.WriteLine("\t{0} вы пришли на работу", username);
             Console.WriteLine("Начать работу?");
             bool replayWork = true;
@@ -149,7 +149,7 @@ namespace Market
             bool replayStore = true;
             do
             {
-                Picture.drawMarcet();
+                PictureUtils.drawMarcet();
                 Console.Write("\t{0} вы в магазине. На счету {1} Для выхода введите (", username, Wallet);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("домой");
@@ -173,12 +173,12 @@ namespace Market
                 switch (answer.ToLower())
                 {
                     case "да":
-                        Picture.drawMarcet();
+                        PictureUtils.drawMarcet();
                         AddProduct(productList);
                         AddPrice(priceList);
                         break;
                     case "нет":
-                        Picture.drawMarcet();
+                        PictureUtils.drawMarcet();
                         Wallet = Buy(productList, priceList);
                         break;
                     case "домой":
@@ -280,7 +280,7 @@ namespace Market
         }
     }
 
-    class Picture
+    class PictureUtils
     {
         public static void meHouse()
         {
