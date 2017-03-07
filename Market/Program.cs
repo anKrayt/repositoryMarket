@@ -49,7 +49,8 @@ namespace Market
             priceList.Add(20);
             Wallet = 0f;
             bool replayMainMenu = true;
-            while (replayMainMenu)
+
+            do
             {
                 PictureUtils.DrawHouse();
                 Console.Write("\t{0} вы дома. На счету ", username);
@@ -72,13 +73,13 @@ namespace Market
                 Console.Write("выйти");
                 Console.ResetColor();
                 Console.WriteLine(")");
-                
+
                 Console.Write("Для сохранения игры введите (");
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("сохранить");
                 Console.ResetColor();
                 Console.WriteLine(")");
-                
+
                 Console.WriteLine("для загрузки игры введите (загрузить)");
                 Console.Beep();
                 string answer = Console.ReadLine().ToLower().Trim();
@@ -107,10 +108,12 @@ namespace Market
                         Console.ResetColor();
                         Console.WriteLine("арный?");
                         Console.Beep();
+
                         do
                         {
-                            answer = Console.ReadLine();
-                            switch (answer.ToLower())
+                            answer = Console.ReadLine().ToLower().Trim();
+
+                            switch (answer)
                             {
                                 case "текст":
                                     SaveUtils.saveProduct(productList, priceList);
@@ -126,7 +129,7 @@ namespace Market
                                     break;
                             }
                         } while (!replayFormatSave);
-                            break;
+                        break;
                     case "загрузить":
                         bool replayFormatLoad = true;
                         Console.Write("{0} какой тип загрузки хотите выбрать? ", username);
@@ -139,15 +142,17 @@ namespace Market
                         Console.ResetColor();
                         Console.WriteLine("арный?");
                         Console.Beep();
+
                         do
                         {
-                            answer = Console.ReadLine();
-                            switch (answer.ToLower())
+                            answer = Console.ReadLine().ToLower().Trim();
+
+                            switch (answer)
                             {
                                 case "текст":
-                                    productList = LoadingUtils.ProductLoad();
-                                    priceList = LoadingUtils.PriceLoad();
-                                    Wallet = LoadingUtils.WalletLoad();
+                                    productList = LoadingUtils.LoadProduct();
+                                    priceList = LoadingUtils.LoadPrice();
+                                    Wallet = LoadingUtils.LoadWallet();
                                     replayFormatLoad = false;
                                     break;
                                 case "бин":
@@ -170,12 +175,9 @@ namespace Market
                         Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", username);
                         Console.Beep(100, 500);
                         break;
-
                 }
-            }
+            } while (replayMainMenu);
         }
-
-        
     }
 
     class PictureUtils

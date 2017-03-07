@@ -15,10 +15,12 @@ namespace Market
             Console.WriteLine("Начать работу?");
             Console.Beep();
             bool replayWork = true;
+
             do
             {
-                string answer = Console.ReadLine();
-                switch (answer.ToLower())
+                string answer = Console.ReadLine().ToLower().Trim();
+
+                switch (answer)
                 {
                     case "да":
                         Wallet += 100;

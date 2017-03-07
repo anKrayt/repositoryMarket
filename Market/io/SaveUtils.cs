@@ -12,27 +12,28 @@ namespace Market.io
     {
         public const string fileNameTxt = "TxtSave.txt";
         public const string fileNameBinary = "BinarySave.dat";
-    } 
+    }
 
     class SaveUtils
     {
         public static void saveProduct(List<string> productList, List<float> priceList)
         {
-                StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, System.Text.Encoding.Default);
+            StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, System.Text.Encoding.Default);
             try
             {
-                for (int i = 0; i < productList.Count; i++)
-                {
-                    streamWriterProduct.WriteLine(productList[i]);
-                    streamWriterProduct.WriteLine(priceList[i]);
-                }
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                    {
+                        streamWriterProduct.WriteLine(nameProduct.Current);
+                        streamWriterProduct.WriteLine(priceProduct.Current);
+                    }
                 streamWriterProduct.WriteLine(Program.Wallet);
                 Console.WriteLine("Сохранение завершено");
             }
-            catch (Exception x)
+            catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(x.Message);
+                Console.Error.WriteLine(e.Message);
             }
             finally
             {
@@ -47,88 +48,82 @@ namespace Market.io
                 using (BinaryWriter binaryWriteProduct = new BinaryWriter(File.Open(Constants.fileNameBinary, FileMode.OpenOrCreate)))
                 {
                     binaryWriteProduct.Write(Program.Wallet);
-                    for (int i = 0; i < productList.Count; i++)
-                    {
-                        binaryWriteProduct.Write(productList[i]);
-                        binaryWriteProduct.Write(priceList[i]);
-                    }
+
+                    using (var nameProduct = productList.GetEnumerator())
+                    using (var priceProduct = priceList.GetEnumerator())
+                        while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                        {
+                            binaryWriteProduct.Write(nameProduct.Current);
+                            binaryWriteProduct.Write(priceProduct.Current);
+                        }
                     Console.WriteLine("Сохранение завершено");
                 }
 
             }
             catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
         }
     }
 
     class LoadingUtils
     {
-        public static List<string> ProductLoad()
+        public static List<string> LoadProduct()
         {
-            List<string> product = new List<string>();
-            int num = File.ReadAllLines(Constants.fileNameTxt).Length;
+            List<string> productList = new List<string>();
+            int countLines = File.ReadAllLines(Constants.fileNameTxt).Length;
             try
             {
                 using (StreamReader streamReaderProduct = new StreamReader(Constants.fileNameTxt, System.Text.Encoding.Default))
                 {
-                    string line;
-                    for (int i = 0; i < num - 1; i += 2)
+                    for (int i = 0; i < countLines - 1; i += 2)
                     {
-                        line = streamReaderProduct.ReadLine();
-                        product.Add(line);
+                        productList.Add(streamReaderProduct.ReadLine());
                         streamReaderProduct.ReadLine();
                     }
                 }
-
             }
             catch (FormatException e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
-            return product;
+            return productList;
         }
 
-        public static List<float> PriceLoad()
+        public static List<float> LoadPrice()
         {
-            List<float> price = new List<float>();
+            List<float> priceList = new List<float>();
             int LineСountFile = File.ReadAllLines(Constants.fileNameTxt).Length;
 
             try
             {
                 using (StreamReader streamReaderPrice = new StreamReader(Constants.fileNameTxt, System.Text.Encoding.Default))
                 {
-                    float line;
                     for (int i = 0; i < LineСountFile - 1; i += 2)
                     {
                         streamReaderPrice.ReadLine();
-                        line = Convert.ToSingle(streamReaderPrice.ReadLine());
-                        price.Add(line);
+                        priceList.Add(Convert.ToSingle(streamReaderPrice.ReadLine()));
                     }
                     Console.WriteLine("Закгрузка прошла успешно");
                 }
             }
             catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
-            return price;
+            return priceList;
         }
 
-        public static float WalletLoad()
+        public static float LoadWallet()
         {
-            float wallet;
+            string line;
             int LineСountFile = File.ReadAllLines(Constants.fileNameTxt).Length;
             using (StreamReader streamReaderWallet = new StreamReader(Constants.fileNameTxt, System.Text.Encoding.Default))
             {
-                string line = File.ReadLines(Constants.fileNameTxt).Skip(LineСountFile - 1).First();
-                wallet = Convert.ToSingle(line);
+                line = File.ReadLines(Constants.fileNameTxt).Skip(LineСountFile - 1).First();
             }
-            return wallet;
+            return Convert.ToSingle(line);
         }
 
         public static List<string> binaryProductLoad(List<string> productList)
@@ -147,10 +142,9 @@ namespace Market.io
             }
             catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
-            return productList ;
+            return productList;
         }
 
         public static List<float> binaryPriceLoad(List<float> priceList)
@@ -169,8 +163,7 @@ namespace Market.io
             }
             catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
             return priceList;
         }
@@ -181,16 +174,12 @@ namespace Market.io
             {
                 using (BinaryReader binaryReaderPrice = new BinaryReader(File.Open(Constants.fileNameBinary, FileMode.Open)))
                     wallet = binaryReaderPrice.ReadSingle();
-
             }
             catch (Exception e)
             {
-                TextWriter errorWriter = Console.Error;
-                errorWriter.WriteLine(e.Message);
+                Console.Error.WriteLine(e.Message);
             }
             return wallet;
         }
     }
-
-
 }

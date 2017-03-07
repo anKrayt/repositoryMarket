@@ -11,6 +11,7 @@ namespace Market
         public static float Store(List<string> productList, List<float> priceList, string userName, float Wallet)
         {
             bool replayStore = true;
+
             do
             {
                 PictureUtils.DrawMarcet();
@@ -21,20 +22,24 @@ namespace Market
                 Console.WriteLine(")");
 
                 Console.WriteLine("На данный момент в магазине есть:");
-                for (int i = 0; i < priceList.Count; i++)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(productList[i]);
-                    Console.ResetColor();
-                    Console.Write('-');
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", priceList[i]);
-                    Console.ResetColor();
-                }
+
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write(nameProduct.Current);
+                        Console.ResetColor();
+                        Console.Write('-');
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("{0:0.##}", priceProduct.Current);
+                        Console.ResetColor();
+                    }
+
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
-                Console.Beep();
                 var answer = Console.ReadLine().Trim().ToLower();
                 Console.Clear();
+
                 switch (answer)
                 {
                     case "да":
@@ -61,7 +66,6 @@ namespace Market
         static List<string> AddProduct(List<string> productList)
         {
             Console.WriteLine("Введите название товара");
-            Console.Beep();
             productList.Add(Console.ReadLine().Trim().ToLower());
             return productList;
         }
@@ -71,16 +75,19 @@ namespace Market
             Console.WriteLine("Введите цену товара");
             Console.Beep();
             bool result;
+
             do
             {
                 float price;
                 result = float.TryParse(Console.ReadLine().Trim(), out price);
+
                 if (price < 0)
                 {
                     result = false;
                     Console.WriteLine("Использование отрецательных чисел запрещено");
                     Console.Beep(100, 500);
                 }
+
                 switch (result)
                 {
                     case false:
@@ -101,18 +108,21 @@ namespace Market
         {
             string answer;
             bool result = true;
+
             do
             {
-                for (int i = 0; i < priceList.Count; i++)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(productList[i]);
-                    Console.ResetColor();
-                    Console.Write('-');
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", priceList[i]);
-                    Console.ResetColor();
-                }
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write(nameProduct.Current);
+                        Console.ResetColor();
+                        Console.Write('-');
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("{0:0.##}", priceProduct.Current);
+                        Console.ResetColor();
+                    }
                 Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", userName);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("назад");
@@ -120,24 +130,25 @@ namespace Market
                 Console.WriteLine(')');
                 Console.Beep();
                 answer = Console.ReadLine().Trim().ToLower();
-                for (int i = 0; i < productList.Count; i++)
-                {
-                    if (answer.ToLower() == productList[i])
+
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
                     {
-                        if (Wallet >= priceList[i])
+                        if (answer.ToLower() == nameProduct.Current)
                         {
-                            Wallet -= priceList[i];
-                            Console.WriteLine("Вы купили " + productList[i] + " остаток на счету " + Wallet);
-                            Console.Beep(500, 150);
-                            Console.Beep(900, 600);
-                        }
-                        else
-                        {
-                            Console.WriteLine("{0} недостаточно денег для этой покупки, сходите на работу", userName);
-                            Console.Beep(100, 500);
+                            if (Wallet >= priceProduct.Current)
+                            {
+                                Wallet -= priceProduct.Current;
+                                Console.WriteLine("Вы купили {0}, остаток на счету {1}$", nameProduct.Current, Wallet);
+                            }
+                            else
+                            {
+                                Console.WriteLine("{0} недостаточно денег для этой покупки, сходите на работу", userName);
+                                Console.Beep(100, 500);
+                            }
                         }
                     }
-                }
                 if (answer.ToLower() == "назад")
                 {
                     result = false;
