@@ -26,7 +26,7 @@ namespace Market
 
         static List<int> countProductInFridgeList = new List<int>(); //лист количества продуктов в холодильнике
 
-        static string userName = Environment.UserName; //имя пользователя
+        static string username = Environment.UserName; //имя пользователя
 
         public static float Wallet //свойство кошелька
         {
@@ -68,12 +68,12 @@ namespace Market
 
             Wallet = 0f;
 
-            bool replayMainMenu = true;
+            bool replayMainMenu;
 
             do
             {
-                Picture.meHouse();
-                Console.Write("\t{0} вы дома. На счету ", userName);
+                Picture.drawHouse();
+                Console.Write("\t{0} вы дома. На счету ", username);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{0:0.##}", wallet);
                 Console.ResetColor();
@@ -108,8 +108,8 @@ namespace Market
 
                 Console.WriteLine("для загрузки игры введите (загрузить)");
                 string answer = Console.ReadLine().ToLower().Trim();
-
                 Console.Clear();
+
                 switch (answer)
                 {
                     case "есть":
@@ -117,18 +117,18 @@ namespace Market
                         break;
                     case "работа":
                         Satiety.ChangeCount(15, false);
-                        Wallet = JobUtils.Job(Wallet, userName);
+                        Wallet = JobUtils.Job(Wallet, username);
                         break;
                     case "магазин":
                         Satiety.ChangeCount(15, false);
-                        Wallet = StoreUtils.Store(productList, priceList, userName, Wallet, productInFridge, countProductInFridgeList, satietyList);
+                        Wallet = StoreUtils.Store(productList, priceList, username, Wallet, productInFridge, countProductInFridgeList, satietyList);
                         break;
                     case "выйти":
                         replayMainMenu = false;
                         break;
                     case "сохранить":
                         bool replayFormatSave = false;
-                        Console.Write("{0} какой тип сохранения хотите выбрать? ", userName);
+                        Console.Write("{0} какой тип сохранения хотите выбрать? ", username);
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("текст");
                         Console.ResetColor();
@@ -139,8 +139,8 @@ namespace Market
                         Console.WriteLine("арный?");
                         do
                         {
-                            answer = Console.ReadLine();
-                            switch (answer.ToLower())
+                            answer = Console.ReadLine().ToLower().Trim();
+                            switch (answer)
                             {
                                 case "текст":
                                     SaveUtils.saveProduct(productList, priceList);
@@ -151,7 +151,7 @@ namespace Market
                                     replayFormatSave = true;
                                     break;
                                 default:
-                                    Console.WriteLine(" ОШИБКА! {0} Введите 'текст' или 'бин'.", userName);
+                                    Console.WriteLine(" ОШИБКА! {0} Введите 'текст' или 'бин'.", username);
                                     Console.Beep(100, 500);
                                     break;
                             }
@@ -159,7 +159,7 @@ namespace Market
                         break;
                     case "загрузить":
                         bool replayFormatLoad = true;
-                        Console.Write("{0} какой тип загрузки хотите выбрать? ", userName);
+                        Console.Write("{0} какой тип загрузки хотите выбрать? ", username);
                         Console.ForegroundColor = ConsoleColor.Blue;
                         Console.Write("текст");
                         Console.ResetColor();
@@ -170,32 +170,32 @@ namespace Market
                         Console.WriteLine("арный?");
                         do
                         {
-                            answer = Console.ReadLine();
-                            switch (answer.ToLower())
+                            answer = Console.ReadLine().ToLower().Trim();
+                            switch (answer)
                             {
                                 case "текст":
-                                    productList = LoadingUtils.ProductLoad();
-                                    priceList = LoadingUtils.PriceLoad();
-                                    Wallet = LoadingUtils.WalletLoad();
+                                    productList = LoadingUtils.loadProduct();
+                                    priceList = LoadingUtils.loadPrice();
+                                    Wallet = LoadingUtils.loadWallet();
                                     replayFormatLoad = false;
                                     break;
                                 case "бин":
                                     productList.Clear();
                                     priceList.Clear();
-                                    productList = LoadingUtils.binaryProductLoad(productList);
-                                    priceList = LoadingUtils.binaryPriceLoad(priceList);
-                                    Wallet = LoadingUtils.binaryWalletLoad(wallet);
+                                    productList = LoadingUtils.loadBinaryProduct(productList);
+                                    priceList = LoadingUtils.LoadBinaryPrice(priceList);
+                                    Wallet = LoadingUtils.loadBinaryWallet(wallet);
                                     replayFormatLoad = false;
                                     break;
                                 default:
-                                    Console.WriteLine(" ОШИБКА!{0} введите 'текст' или 'бин'.", userName);
+                                    Console.WriteLine(" ОШИБКА!{0} введите 'текст' или 'бин'.", username);
                                     Console.Beep(100, 500);
                                     break;
                             }
                         } while (replayFormatLoad);
                         break;
                     default:
-                        Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", userName);
+                        Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", username);
                         Console.Beep(100, 500);
                         break;
                 }
@@ -208,7 +208,7 @@ namespace Market
 
     class Picture
     {
-        public static void meHouse()
+        public static void drawHouse()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\t    /\\\\\\\\\\\\\\\\\\\\\\\\");
@@ -224,7 +224,7 @@ namespace Market
 
         }
 
-        public static void meMarcet()
+        public static void drawMarcet()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("\t _________________________________");
@@ -240,7 +240,7 @@ namespace Market
             Console.ResetColor();
         }
 
-        public static void meJob()
+        public static void drawJob()
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("\t       _____        / /|");
@@ -255,7 +255,7 @@ namespace Market
             Console.ResetColor();
         }
 
-        public static void meFridge()
+        public static void drawFridge()
         {
             Console.WriteLine("          _________");
             Console.WriteLine("         /        /|");

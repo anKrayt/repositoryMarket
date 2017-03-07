@@ -23,11 +23,13 @@ namespace Market.io
 
             try
             {
-                for (int i = 0; i < productList.Count; i++)
-                {
-                    streamWriterProduct.WriteLine(productList[i]);
-                    streamWriterProduct.WriteLine(priceList[i]);
-                }
+                using (var nameProductList = productList.GetEnumerator())
+                using (var countProceList = priceList.GetEnumerator())
+                    while (nameProductList.MoveNext() && countProceList.MoveNext())
+                    {
+                        streamWriterProduct.WriteLine(nameProductList.Current);
+                        streamWriterProduct.WriteLine(countProceList.Current);
+                    }
                 streamWriterProduct.WriteLine(Program.Wallet);
                 Console.WriteLine("Сохранение завершено");
             }
@@ -48,10 +50,13 @@ namespace Market.io
                 using (BinaryWriter binaryWriteProduct = new BinaryWriter(File.Open(Constants.fileNameBinary, FileMode.OpenOrCreate)))
                 {
                     binaryWriteProduct.Write(Program.Wallet);
-                    for (int i = 0; i < productList.Count; i++)
-                    {
-                        binaryWriteProduct.Write(productList[i]);
-                        binaryWriteProduct.Write(priceList[i]);
+
+                    using (var nameProductList = productList.GetEnumerator())
+                    using (var countProceList = priceList.GetEnumerator())
+                        while (nameProductList.MoveNext() && countProceList.MoveNext())
+                        {
+                        binaryWriteProduct.Write(nameProductList.Current);
+                        binaryWriteProduct.Write(countProceList.Current);
                     }
                     Console.WriteLine("Сохранение завершено");
                 }
@@ -66,18 +71,18 @@ namespace Market.io
 
     class LoadingUtils
     {
-        public static List<string> ProductLoad()
+        public static List<string> loadProduct()
         {
             List<string> product = new List<string>();
 
-            int num = File.ReadAllLines(Constants.fileNameTxt).Length;
+            int countLines = File.ReadAllLines(Constants.fileNameTxt).Length;
 
             try
             {
                 using (StreamReader streamReaderProduct = new StreamReader(Constants.fileNameTxt, Encoding.Default))
                 {
                     string line;
-                    for (int i = 0; i < num - 1; i += 2)
+                    for (int i = 0; i < countLines - 1; i += 2)
                     {
                         line = streamReaderProduct.ReadLine();
                         product.Add(line);
@@ -93,7 +98,7 @@ namespace Market.io
             return product;
         }
 
-        public static List<float> PriceLoad()
+        public static List<float> loadPrice()
         {
             List<float> price = new List<float>();
 
@@ -120,7 +125,7 @@ namespace Market.io
             return price;
         }
 
-        public static float WalletLoad()
+        public static float loadWallet()
         {
             float Wallet = 0;
 
@@ -141,7 +146,7 @@ namespace Market.io
             return Wallet;
         }
 
-        public static List<string> binaryProductLoad(List<string> productList)
+        public static List<string> loadBinaryProduct(List<string> productList)
         {
             try
             {
@@ -162,7 +167,7 @@ namespace Market.io
             return productList;
         }
 
-        public static List<float> binaryPriceLoad(List<float> priceList)
+        public static List<float> LoadBinaryPrice(List<float> priceList)
         {
             try
             {
@@ -183,7 +188,7 @@ namespace Market.io
             return priceList;
         }
 
-        public static float binaryWalletLoad(float wallet)
+        public static float loadBinaryWallet(float wallet)
         {
             try
             {

@@ -10,7 +10,7 @@ namespace Market
     {
         public static float Job(float Wallet, string username)
         {
-            Picture.meJob();
+            Picture.drawJob();
             Console.WriteLine("\t{0} вы пришли на работу", username);
             Console.Write("Вы сыты на ");
             Satiety.Count();
@@ -20,8 +20,8 @@ namespace Market
 
             do
             {
-                string answer = Console.ReadLine();
-                switch (answer.ToLower())
+                string answer = Console.ReadLine().ToLower().Trim();
+                switch (answer)
                 {
                     case "да":
                         Satiety.ChangeCount(5, false);
@@ -33,6 +33,7 @@ namespace Market
                         Console.Write("Вы сыты на ");
                         Satiety.Count();
                         Console.WriteLine('%');
+                        Satiety.Result();
                         Console.WriteLine("Продолжить работу?");
                         break;
                     case "нет":

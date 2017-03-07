@@ -14,7 +14,7 @@ namespace Market
 
             do
             {
-                Picture.meMarcet();
+                Picture.drawMarcet();
                 Console.Write("\t{0} вы в магазине. На счету {1} Для выхода введите (", userName, Wallet);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("домой");
@@ -23,17 +23,20 @@ namespace Market
 
                 Console.WriteLine("На данный момент в магазине есть:");
 
-                for (int i = 0; i < priceList.Count; i++)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(productList[i]);
-                    Console.ResetColor();
-                    Console.Write('-');
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("{0:0.##}", priceList[i]);
-                    Console.ResetColor();
-                    Console.WriteLine(" восполняет {0} сытости", satietyList[i]);
-                }
+                using (var nameProductList = productList.GetEnumerator())
+                using (var countPriceList = priceList.GetEnumerator())
+                using (var countSatiety = satietyList.GetEnumerator())
+                    while (nameProductList.MoveNext() && countPriceList.MoveNext() && countSatiety.MoveNext())
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write(nameProductList.Current);
+                        Console.ResetColor();
+                        Console.Write('-');
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("{0:0.##}", countPriceList.Current);
+                        Console.ResetColor();
+                        Console.WriteLine(" восполняет {0} сытости", countSatiety.Current);
+                    }
 
                 Console.WriteLine("Для добавления товара в магазин введите (добавить). Для покупки товаров введите (купить)");
 
@@ -44,13 +47,13 @@ namespace Market
                 switch (answer)
                 {
                     case "добавить":
-                        Picture.meMarcet();
+                        Picture.drawMarcet();
                         productList = AddProduct(productList);
                         priceList = AddPrice(priceList);
                         satietyList = AddSatiety(satietyList);
                         break;
                     case "купить":
-                        Picture.meMarcet();
+                        Picture.drawMarcet();
                         Wallet = Buy(productList, priceList, userName, Wallet, productInFridge, countProductInFridgeList, satietyList);
                         break;
                     case "домой":
@@ -149,16 +152,19 @@ namespace Market
 
             do
             {
-                for (int i = 0; i < priceList.Count; i++)
-                {
+                using (var nameProductList = productList.GetEnumerator())
+                using (var countPriceList = priceList.GetEnumerator())
+                using (var countSatiety = satietyList.GetEnumerator())
+                    while (nameProductList.MoveNext() && countPriceList.MoveNext() && countSatiety.MoveNext())
+                    {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(productList[i]);
+                    Console.Write(nameProductList.Current);
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("{0:0.##}", priceList[i]);
+                    Console.Write("{0:0.##}", countPriceList.Current);
                     Console.ResetColor();
-                    Console.WriteLine(" восполняет {0} сытости", satietyList[i]);
+                    Console.WriteLine(" восполняет {0} сытости", countSatiety.Current);
                 }
 
                 Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", userName);
@@ -171,7 +177,7 @@ namespace Market
 
                 for (int i = 0; i < productList.Count; i++)
                 {
-                    if (answer.ToLower() == productList[i])
+                    if (answer == productList[i])
                     {
                         if (Wallet >= priceList[i])
                         {
@@ -194,7 +200,7 @@ namespace Market
                                     break;
                                 }
                             }
-                            Picture.meMarcet();
+                            Picture.drawMarcet();
                         }
                         else
                         {

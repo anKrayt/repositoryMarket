@@ -9,7 +9,7 @@ namespace Market
 {
     static class FridgeUtils //холодильник
     {
-        public static void Food(List<string> productInFridge, List<int> countProductInFridgeList, List<int> satietyList)
+        public static void Food(List<string> productInFridgeList, List<int> countProductInFridgeList, List<int> satietyList)
         {
             string answer;
             bool replayFood = true;
@@ -17,7 +17,7 @@ namespace Market
 
             do
             {
-                Picture.meFridge();
+                Picture.drawFridge();
                 Console.WriteLine();
                 Console.Write("Вы сыты на ");
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
@@ -25,10 +25,10 @@ namespace Market
                 Console.ResetColor();
                 Console.WriteLine("Чтобы закрыть холодильник введите (назад)");
 
-                for (int i = 0; i < productInFridge.Count; i++)
+                for (int i = 0; i < productInFridgeList.Count; i++)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write("{0} ", productInFridge[i]);
+                    Console.Write("{0} ", productInFridgeList[i]);
                     Console.ResetColor();
                     Console.Write('-');
                     Console.ForegroundColor = ConsoleColor.White;
@@ -44,17 +44,17 @@ namespace Market
 
                 answer = Console.ReadLine().ToLower().Trim();
 
-                for (int i = 0; i < productInFridge.Count; i++)
+                for (int i = 0; i < productInFridgeList.Count; i++)
                 {
-                    if (answer == productInFridge[i]) //поедание продуктов
+                    if (answer == productInFridgeList[i]) //поедание продуктов
                     {
                         if (countProductInFridgeList[i] == 1)
                         {
                             Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("Вы съели {0}. Сытость восполнина на {1}%", productInFridge[i], satietyList[i]);
+                            Console.WriteLine("Вы съели {0}. Сытость восполнина на {1}%", productInFridgeList[i], satietyList[i]);
                             Console.ResetColor();
-                            productInFridge.RemoveAt(i);
+                            productInFridgeList.RemoveAt(i);
                             countProductInFridgeList.RemoveAt(i);
                             Satiety.ChangeCount(satietyList[i], true);
 
@@ -78,7 +78,7 @@ namespace Market
                         {
                             Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Yellow;
-                            Console.WriteLine("Вы съели {0}. Сытость восполнина на {1}%", productInFridge[i], satietyList[i]);
+                            Console.WriteLine("Вы съели {0}. Сытость восполнина на {1}%", productInFridgeList[i], satietyList[i]);
                             Console.ResetColor();
                             countProductInFridgeList[i]--;
                             Satiety.ChangeCount(satietyList[i], true);

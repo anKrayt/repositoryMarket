@@ -8,6 +8,14 @@ namespace Market
 {
     class Satiety
     {
+        const int death = -75;
+
+        const int fainting = -50;
+
+        const int veryHungry = -25;
+
+        const int hungry = 0;
+
         static int satietyInt = 100; //сытость
 
         //возвращение свойства сытости
@@ -25,14 +33,7 @@ namespace Market
         {
             if (nums > 0)
             {
-                if (plusOrMinus)
-                {
-                    satietyInt += nums;
-                }
-                else
-                {
-                    satietyInt -= nums;
-                }
+                satietyInt = plusOrMinus ? (satietyInt += nums) : (satietyInt -= nums);
             }
             else
             {
@@ -57,7 +58,7 @@ namespace Market
         {
             bool replayMainMenu = true;
 
-            if (SatietyInt <= -75)
+            if (SatietyInt <= death)
             {
                 Console.Clear();
                 Console.WriteLine("Вы умерли от голода.");
@@ -65,17 +66,15 @@ namespace Market
                 replayMainMenu = false;
                 Console.ReadKey();
             }
-            else if (SatietyInt <= -50)
+            else if (SatietyInt <= fainting)
             {
-                Console.Clear();
                 Console.WriteLine("У вас голодный обморок");
             }
-            else if (SatietyInt <= -25)
+            else if (SatietyInt <= veryHungry)
             {
-                Console.Clear();
                 Console.WriteLine("Вы хотите ЖРАТЬ");
             }
-            else if (SatietyInt == 0)
+            else if (SatietyInt == hungry)
             {
                 Console.Clear();
                 Console.WriteLine("Вы голодны. Пора бы поесть");
