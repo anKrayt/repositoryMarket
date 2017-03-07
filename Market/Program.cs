@@ -233,10 +233,10 @@ namespace Market
 
         static float Buy(List<string> productList, List<float> priceList)
         {
-            string answer;
             bool replayBuy = true;
             do
             {
+                string answer;
                 using (var nameProduct = productList.GetEnumerator())
                 using (var priceProduct = priceList.GetEnumerator())
                     while (nameProduct.MoveNext() && priceProduct.MoveNext())
@@ -256,24 +256,23 @@ namespace Market
                 Console.WriteLine(')');
                 Console.Beep();
                 answer = Console.ReadLine();
-                for (int i = 0; i < productList.Count; i++)
-                {
-                    if (answer.ToLower() == productList[i])
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
                     {
-                        if (Wallet >= priceList[i])
+                        if (answer.ToLower() == nameProduct.Current)
                         {
-                            Wallet -= priceList[i];
-                            Console.WriteLine("Вы купили " + productList[i] + " остаток на счету " + Wallet);
-                            Console.Beep(500, 150);
-                            Console.Beep(900, 600);
-                        }
-                        else
-                        {
-                            Console.WriteLine("{0} недостаточно денег для этой покупки, сходите на работу", username);
-                            Console.Beep(100, 500);
+                            if (Wallet >= priceProduct.Current)
+                            {
+                                Wallet -= priceProduct.Current;
+                                Console.WriteLine("Вы купили " + nameProduct.Current + " остаток на счету " + Wallet);
+                            }
+                            else
+                            {
+                                Console.WriteLine("{0} недостаточно денег для этой покупки, сходите на работу", username);
+                            }
                         }
                     }
-                }
                 if (answer.ToLower() == "ничего")
                 {
                     replayBuy = false;
