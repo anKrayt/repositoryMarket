@@ -20,17 +20,19 @@ namespace Market.io
             StreamWriter streamWriterProduct = new StreamWriter(Constants.fileNameTxt, false, System.Text.Encoding.Default);
             try
             {
-                for (int i = 0; i < productList.Count; i++)
-                {
-                    streamWriterProduct.WriteLine(productList[i]);
-                    streamWriterProduct.WriteLine(priceList[i]);
-                }
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                    {
+                        streamWriterProduct.WriteLine(nameProduct.Current);
+                        streamWriterProduct.WriteLine(priceProduct.Current);
+                    }
                 streamWriterProduct.WriteLine(Program.Wallet);
                 Console.WriteLine("Сохранение завершено");
             }
-            catch (Exception x)
+            catch (Exception e)
             {
-                Console.Error.WriteLine(x.Message);
+                Console.Error.WriteLine(e.Message);
             }
             finally
             {
@@ -41,19 +43,19 @@ namespace Market.io
 
     class LoadingUtils
     {
-        public static List<string> ProductLoad()
+        public static List<string> LoadProduct()
         {
-            List<string> product = new List<string>();
-            int num = File.ReadAllLines(Constants.fileNameTxt).Length;
+            List<string> productList = new List<string>();
+            int countLines = File.ReadAllLines(Constants.fileNameTxt).Length;
             try
             {
                 using (StreamReader streamReaderProduct = new StreamReader(Constants.fileNameTxt, System.Text.Encoding.Default))
                 {
                     string line;
-                    for (int i = 0; i < num - 1; i += 2)
+                    for (int i = 0; i < countLines - 1; i += 2)
                     {
                         line = streamReaderProduct.ReadLine();
-                        product.Add(line);
+                        productList.Add(line);
                         streamReaderProduct.ReadLine();
                     }
                 }
@@ -62,24 +64,22 @@ namespace Market.io
             {
                 Console.Error.WriteLine(e.Message);
             }
-            return product;
+            return productList;
         }
 
-        public static List<float> PriceLoad()
+        public static List<float> LoadPrice()
         {
-            List<float> price = new List<float>();
-            int LineСountFile = File.ReadAllLines(Constants.fileNameTxt).Length;
+            List<float> priceList = new List<float>();
+            int lineСountFile = File.ReadAllLines(Constants.fileNameTxt).Length;
 
             try
             {
-                using (StreamReader streamReaderPrice = new StreamReader(Constants.fileNameTxt, System.Text.Encoding.Default))
+                using (StreamReader streamReaderPrice = new StreamReader(Constants.fileNameTxt, Encoding.Default))
                 {
-                    float line;
-                    for (int i = 0; i < LineСountFile - 1; i += 2)
+                    for (int i = 0; i < lineСountFile - 1; i += 2)
                     {
                         streamReaderPrice.ReadLine();
-                        line = Convert.ToSingle(streamReaderPrice.ReadLine());
-                        price.Add(line);
+                        priceList.Add(Convert.ToSingle(streamReaderPrice.ReadLine()));
                     }
                     Console.WriteLine("Закгрузка прошла успешно");
                 }
@@ -88,19 +88,18 @@ namespace Market.io
             {
                 Console.Error.WriteLine(e.Message);
             }
-            return price;
+            return priceList;
         }
 
         public static float WalletLoad()
         {
-            float wallet;
+            string line;
             int LineСountFile = File.ReadAllLines(Constants.fileNameTxt).Length;
-            using (StreamReader streamReaderWallet = new StreamReader(Constants.fileNameTxt, System.Text.Encoding.Default))
+            using (StreamReader streamReaderWallet = new StreamReader(Constants.fileNameTxt, Encoding.Default))
             {
-                string line = File.ReadLines(Constants.fileNameTxt).Skip(LineСountFile - 1).First();
-                wallet = Convert.ToSingle(line);
+                line = File.ReadLines(Constants.fileNameTxt).Skip(LineСountFile - 1).First();
             }
-            return wallet;
+            return Convert.ToSingle(line);
         }
     }
 

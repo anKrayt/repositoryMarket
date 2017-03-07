@@ -51,7 +51,7 @@ namespace Market
             bool replayHouse = true;
             do
             {
-                PictureUtils.meHouse();
+                PictureUtils.drawHouse();
                 Console.Write("\t{0} вы дома. На счету ", username);
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("{0:0.##}", Wallet);
@@ -98,8 +98,8 @@ namespace Market
                         SaveUtils.saveProduct(productList, priceList);
                         break;
                     case "загрузить":
-                        productList = LoadingUtils.ProductLoad();
-                        priceList = LoadingUtils.PriceLoad();
+                        productList = LoadingUtils.LoadProduct();
+                        priceList = LoadingUtils.LoadPrice();
                         Wallet = LoadingUtils.WalletLoad();
                         break;
                     default:
@@ -157,16 +157,18 @@ namespace Market
                 Console.WriteLine(")");
 
                 Console.WriteLine("На данный момент в магазине есть:");
-                for (int i = 0; i < priceList.Count; i++)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(productList[i]);
-                    Console.ResetColor();
-                    Console.Write('-');
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", priceList[i]);
-                    Console.ResetColor();
-                }
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write(nameProduct.Current);
+                        Console.ResetColor();
+                        Console.Write('-');
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("{0:0.##}", priceProduct.Current);
+                        Console.ResetColor();
+                    }
                 Console.WriteLine("Хотите добавить новый предмет в магазин?");
                 var answer = Console.ReadLine();
                 Console.Clear();
@@ -219,7 +221,7 @@ namespace Market
                         "Попробуйте использовать положительные числа. Для ввода дробного числа используйте (,)");
                     Console.Beep(100, 500);
                 }
-                else if (replayAddPrice == true)
+                else if (replayAddPrice)
                 {
                     priceList.Add(price);
                     break;
@@ -235,16 +237,18 @@ namespace Market
             bool replayBuy = true;
             do
             {
-                for (int i = 0; i < priceList.Count; i++)
-                {
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write(productList[i]);
-                    Console.ResetColor();
-                    Console.Write('-');
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("{0:0.##}", priceList[i]);
-                    Console.ResetColor();
-                }
+                using (var nameProduct = productList.GetEnumerator())
+                using (var priceProduct = priceList.GetEnumerator())
+                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGreen;
+                        Console.Write(nameProduct.Current);
+                        Console.ResetColor();
+                        Console.Write('-');
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("{0:0.##}", priceProduct.Current);
+                        Console.ResetColor();
+                    }
                 Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", username);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.Write("ничего");
@@ -282,7 +286,7 @@ namespace Market
 
     class PictureUtils
     {
-        public static void meHouse()
+        public static void drawHouse()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\t    /\\\\\\\\\\\\\\\\\\\\\\\\");
