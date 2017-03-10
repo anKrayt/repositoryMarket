@@ -16,15 +16,15 @@ namespace Market
     {
         static float wallet; //деньги
 
-        static List<int> satietyList = new List<int>(); //лист сытости
+        static List<int> satietyList = new List<int> { 15, 10, 5 }; //лист сытости
 
-        static List<string> productList = new List<string>(); //лист продуктов
+        static List<string> productList = new List<string> { "хлеб", "пиво", "чай"}; //лист продуктов
 
-        static List<float> priceList = new List<float>(); //лист цен
+        static List<float> priceList = new List<float> { 10, 30, 20 }; //лист цен
 
-        static List<string> productInFridge = new List<string>(); //лист продуктов в холодильнике
+        static List<string> productInFridge = new List<string> { "хлеб", "пиво", "чай" }; //лист продуктов в холодильнике
 
-        static List<int> countProductInFridgeList = new List<int>(); //лист количества продуктов в холодильнике
+        static List<int> countProductInFridgeList = new List<int> { 1, 4, 2 }; //лист количества продуктов в холодильнике
 
         static string username = Environment.UserName; //имя пользователя
 
@@ -46,26 +46,6 @@ namespace Market
 
         static void Main(string[] args)
         {
-            satietyList.Add(15);
-            satietyList.Add(10);
-            satietyList.Add(5);
-
-            productInFridge.Add("хлеб");
-            productInFridge.Add("пиво");
-            productInFridge.Add("чай");
-
-            countProductInFridgeList.Add(1);
-            countProductInFridgeList.Add(4);
-            countProductInFridgeList.Add(2);
-
-            productList.Add("хлеб");
-            productList.Add("пиво");
-            productList.Add("чай");
-
-            priceList.Add(10);
-            priceList.Add(30);
-            priceList.Add(20);
-
             Wallet = 0f;
 
             bool replayMainMenu;
