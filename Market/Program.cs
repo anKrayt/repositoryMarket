@@ -48,13 +48,14 @@ namespace Market
             priceList.Add(30);
             priceList.Add(20);
             Wallet = 0f;
-            bool replayHouse = true;
+            bool replayMainMenu = true;
+
             do
             {
-                PictureUtils.drawHouse();
+                PictureUtils.DrawHouse();
                 Console.Write("\t{0} вы дома. На счету ", username);
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("{0:0.##}", Wallet);
+                Console.WriteLine("{0:0.##}", wallet);
                 Console.ResetColor();
 
                 Console.Write("Идти ");
@@ -86,206 +87,101 @@ namespace Market
                 switch (answer)
                 {
                     case "работа":
-                        GoToJob();
+                        JobUtils.Job(Wallet, username);
                         break;
                     case "магазин":
-                        GoToStore(productList, priceList);
+                        Wallet = StoreUtils.Store(productList, priceList, username, Wallet);
                         break;
                     case "выйти":
-                        replayHouse = false;
+                        replayMainMenu = false;
                         break;
                     case "сохранить":
-                        SaveUtils.saveProduct(productList, priceList);
+                        bool replayFormatSave = false;
+                        Console.Write("{0} какой тип сохранения хотите выбрать? ", username);
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("текст");
+                        Console.ResetColor();
+                        Console.Write("овый или ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("бин");
+                        Console.ResetColor();
+                        Console.WriteLine("арный?");
+                        Console.Beep();
+
+                        do
+                        {
+                            answer = Console.ReadLine().ToLower().Trim();
+
+                            switch (answer)
+                            {
+                                case "текст":
+                                    SaveUtils.saveProduct(productList, priceList);
+                                    replayFormatSave = true;
+                                    break;
+                                case "бин":
+                                    SaveUtils.saveBinary(productList, priceList);
+                                    replayFormatSave = true;
+                                    break;
+                                default:
+                                    Console.WriteLine(" ОШИБКА! {0} Введите 'текст' или 'бин'.", username);
+                                    Console.Beep(100, 500);
+                                    break;
+                            }
+                        } while (!replayFormatSave);
                         break;
                     case "загрузить":
-                        productList = LoadingUtils.LoadProduct();
-                        priceList = LoadingUtils.LoadPrice();
-                        Wallet = LoadingUtils.WalletLoad();
+                        bool replayFormatLoad = true;
+                        Console.Write("{0} какой тип загрузки хотите выбрать? ", username);
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.Write("текст");
+                        Console.ResetColor();
+                        Console.Write("овый или ");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("бин");
+                        Console.ResetColor();
+                        Console.WriteLine("арный?");
+                        Console.Beep();
+
+                        do
+                        {
+                            answer = Console.ReadLine().ToLower().Trim();
+
+                            switch (answer)
+                            {
+                                case "текст":
+                                    productList = LoadingUtils.LoadProduct();
+                                    priceList = LoadingUtils.LoadPrice();
+                                    Wallet = LoadingUtils.LoadWallet();
+                                    replayFormatLoad = false;
+                                    break;
+                                case "бин":
+                                    productList.Clear();
+                                    priceList.Clear();
+                                    productList = LoadingUtils.binaryProductLoad(productList);
+                                    priceList = LoadingUtils.binaryPriceLoad(priceList);
+                                    Wallet = LoadingUtils.binaryWalletLoad(wallet);
+                                    replayFormatLoad = false;
+                                    break;
+                                default:
+                                    Console.WriteLine(" ОШИБКА!{0} введите 'текст' или 'бин'.", username);
+                                    Console.Beep(100, 500);
+                                    break;
+                            }
+                        } while (replayFormatLoad);
+
                         break;
                     default:
                         Console.WriteLine("ОШИБКА. {0} проверьте правельность набора", username);
                         Console.Beep(100, 500);
                         break;
                 }
-            } while (replayHouse);
-        }
-
-        static void GoToJob()
-        {
-            PictureUtils.drawJob();
-            Console.WriteLine("\t{0} вы пришли на работу", username);
-            Console.WriteLine("Начать работу?");
-            bool replayWork = true;
-            do
-            {
-                string answer = Console.ReadLine();
-                switch (answer.ToLower())
-                {
-                    case "да":
-                        Wallet += 100;
-                        Console.Write("Получено 100 $. на счету ");
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write("{0} $", Wallet);
-                        Console.ResetColor();
-                        Console.WriteLine(". Продолжыть работу?");
-                        break;
-                    case "нет":
-                        replayWork = false;
-                        break;
-                    default:
-                        Wallet -= 100;
-                        Console.WriteLine(
-                            "{0} вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ " + Wallet +
-                            " $. Вытащить лопату из задницы и продолжить работу?", username);
-                        Console.Beep(100, 500);
-                        break;
-                }
-            } while (replayWork);
-            Console.Clear();
-        }
-
-        static void GoToStore(List<string> productList, List<float> priceList)
-        {
-            bool replayStore = true;
-            do
-            {
-                PictureUtils.drawMarcet();
-                Console.Write("\t{0} вы в магазине. На счету {1} Для выхода введите (", username, Wallet);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("домой");
-                Console.ResetColor();
-                Console.WriteLine(")");
-
-                Console.WriteLine("На данный момент в магазине есть:");
-                using (var nameProduct = productList.GetEnumerator())
-                using (var priceProduct = priceList.GetEnumerator())
-                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write(nameProduct.Current);
-                        Console.ResetColor();
-                        Console.Write('-');
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("{0:0.##}", priceProduct.Current);
-                        Console.ResetColor();
-                    }
-                Console.WriteLine("Хотите добавить новый предмет в магазин?");
-                var answer = Console.ReadLine();
-                Console.Clear();
-                switch (answer.ToLower())
-                {
-                    case "да":
-                        PictureUtils.drawMarcet();
-                        AddProduct(productList);
-                        AddPrice(priceList);
-                        break;
-                    case "нет":
-                        PictureUtils.drawMarcet();
-                        Wallet = Buy(productList, priceList);
-                        break;
-                    case "домой":
-                        replayStore = false;
-                        break;
-                    default:
-                        Console.WriteLine("ОШИБКА. Введите (да) или (нет). Для выхода из магазина введите (домой)");
-                        Console.Beep(100, 500);
-                        break;
-                }
-            } while (replayStore);
-        }
-
-        static void AddProduct(List<string> productList)
-        {
-            Console.WriteLine("Введите название товара");
-            productList.Add(Console.ReadLine());
-        }
-
-        static void AddPrice(List<float> priceList)
-        {
-            Console.WriteLine("Введите цену товара");
-            Console.Beep();
-            bool replayAddPrice;
-            do
-            {
-                float price;
-                replayAddPrice = float.TryParse(Console.ReadLine(), out price);
-                if (price < 0)
-                {
-                    replayAddPrice = false;
-                    Console.WriteLine("Использование отрецательных чисел запрещено");
-                    Console.Beep(100, 500);
-                }
-                else if (replayAddPrice == false)
-                {
-                    Console.WriteLine(
-                        "Попробуйте использовать положительные числа. Для ввода дробного числа используйте (,)");
-                    Console.Beep(100, 500);
-                }
-                else if (replayAddPrice)
-                {
-                    priceList.Add(price);
-                    break;
-                }
-
-            } while (!replayAddPrice);
-            Console.Clear();
-        }
-
-        static float Buy(List<string> productList, List<float> priceList)
-        {
-            bool replayBuy = true;
-            do
-            {
-                string answer;
-                using (var nameProduct = productList.GetEnumerator())
-                using (var priceProduct = priceList.GetEnumerator())
-                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
-                    {
-                        Console.ForegroundColor = ConsoleColor.DarkGreen;
-                        Console.Write(nameProduct.Current);
-                        Console.ResetColor();
-                        Console.Write('-');
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("{0:0.##}", priceProduct.Current);
-                        Console.ResetColor();
-                    }
-                Console.Write("{0} что вы хотите купить? для выхода из торговой зоны введите (", username);
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.Write("ничего");
-                Console.ResetColor();
-                Console.WriteLine(')');
-                Console.Beep();
-                answer = Console.ReadLine();
-                using (var nameProduct = productList.GetEnumerator())
-                using (var priceProduct = priceList.GetEnumerator())
-                    while (nameProduct.MoveNext() && priceProduct.MoveNext())
-                    {
-                        if (answer.ToLower() == nameProduct.Current)
-                        {
-                            if (Wallet >= priceProduct.Current)
-                            {
-                                Wallet -= priceProduct.Current;
-                                Console.WriteLine("Вы купили " + nameProduct.Current + " остаток на счету " + Wallet);
-                            }
-                            else
-                            {
-                                Console.WriteLine("{0} недостаточно денег для этой покупки, сходите на работу", username);
-                            }
-                        }
-                    }
-                if (answer.ToLower() == "ничего")
-                {
-                    replayBuy = false;
-                }
-            } while (replayBuy);
-            Console.Clear();
-            return Wallet;
+            } while (replayMainMenu);
         }
     }
 
     class PictureUtils
     {
-        public static void drawHouse()
+        public static void DrawHouse()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("\t    /\\\\\\\\\\\\\\\\\\\\\\\\");
@@ -301,7 +197,7 @@ namespace Market
 
         }
 
-        public static void drawMarcet()
+        public static void DrawMarcet()
         {
             Console.ForegroundColor = ConsoleColor.DarkYellow;
             Console.WriteLine("\t _________________________________");
@@ -317,7 +213,7 @@ namespace Market
             Console.ResetColor();
         }
 
-        public static void drawJob()
+        public static void DrawJob()
         {
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("\t       _____        / /|");
