@@ -117,6 +117,7 @@ namespace Market
                         Console.Write("бин");
                         Console.ResetColor();
                         Console.WriteLine("арный?");
+                    
                         do
                         {
                             answer = Console.ReadLine().ToLower().Trim();
@@ -148,6 +149,7 @@ namespace Market
                         Console.Write("бин");
                         Console.ResetColor();
                         Console.WriteLine("арный?");
+                    
                         do
                         {
                             answer = Console.ReadLine().ToLower().Trim();

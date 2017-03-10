@@ -203,6 +203,4 @@ namespace Market.io
             return wallet;
         }
     }
-
-
 }
