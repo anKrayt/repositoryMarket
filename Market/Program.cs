@@ -81,7 +81,6 @@ namespace Market
                 Console.WriteLine(")");
 
                 Console.WriteLine("для загрузки игры введите (загрузить)");
-                Console.Beep();
                 string answer = Console.ReadLine().ToLower().Trim();
 
                 Console.Clear();
