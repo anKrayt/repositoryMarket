@@ -8,29 +8,33 @@ namespace Market
 {
     class JobUtils
     {
-        public static void Job(float Wallet, string userName)
+        public static float Job(float Wallet, string username)
         {
-            PictureUtils.DrawJob();
-            Console.WriteLine("\t{0} вы пришли на работу", userName);
+            Picture.drawJob();
+            Console.WriteLine("\t{0} вы пришли на работу", username);
+            Console.Write("Вы сыты на ");
+            Satiety.Count();
+            Console.WriteLine('%');
             Console.WriteLine("Начать работу?");
-            Console.Beep();
             bool replayWork = true;
 
             do
             {
                 string answer = Console.ReadLine().ToLower().Trim();
-
                 switch (answer)
                 {
                     case "да":
+                        Satiety.ChangeCount(5, false);
                         Wallet += 100;
-                        Console.Write("Получено 100 $. на счету ");
+                        Console.Write("Получено 100$. На счету ");
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.Write("{0} $", Wallet);
+                        Console.Write("{0}$ ", Wallet);
                         Console.ResetColor();
-                        Console.WriteLine(". Продолжыть работу?");
-                        Console.Beep(500, 150);
-                        Console.Beep(900, 600);
+                        Console.Write("Вы сыты на ");
+                        Satiety.Count();
+                        Console.WriteLine('%');
+                        Satiety.Result();
+                        Console.WriteLine("Продолжить работу?");
                         break;
                     case "нет":
                         replayWork = false;
@@ -38,13 +42,13 @@ namespace Market
                     default:
                         Wallet -= 100;
                         Console.WriteLine(
-                            "{0} вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ " + Wallet +
-                            " $. Вытащить лопату из задницы и продолжить работу?", userName);
+                            "{0} вам засунули лопату в жопу и заставили закопать 100 $. НА ВАШЕМ СЧЕТУ {1} $. Вытащить лопату из задницы и продолжить работу?", username, Wallet);
                         Console.Beep(100, 500);
                         break;
                 }
             } while (replayWork);
             Console.Clear();
+            return Wallet;
         }
     }
 }
